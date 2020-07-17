@@ -1,23 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import { forceCenter } from 'd3';
 
 const BubbleChart = ({ data }) => {
-	const yeet = useRef(null);
-	// const [lastMouse, setLastMouse] = useState({ x: 0, y: 0});
-
-	let lastMouse = { x: 0, y: 0 };
+	const svgRef = useRef(null);
 
 	const getSize = (artist) => {
-		// console.log((1 - (window.innerWidth / 1920)));
 		
-		const size = (artist.popularity / 4) / (1 - (window.innerWidth / 1920)); 
-
-		return size < 50 ? 50 : size;
+		const size = (artist.popularity / 4) / (1 - (window.innerWidth / 1920)) + 50; 
+		return size;
 	}
 
 	const getTextSize = (artist) => {
-		return (artist.popularity * 0.1) + 10;
+		return (artist.popularity * 0.3) + 10;
 	}
 
 	useEffect(() => {
@@ -32,12 +26,16 @@ const BubbleChart = ({ data }) => {
 			.force('collide', d3.forceCollide(d => getSize(d)))
 
 		const ds = d3
-			.select(yeet.current)
+			.select(svgRef.current)
 			.attr('width', width)
 			.attr('height', height)
+			.call(d3.zoom().on("zoom", function () {
+				ds.attr("transform", d3.event.transform)
+			}))
+			.append('g');
 
 		// Remove all of the old element when we update data
-		ds.selectAll('.hatty').remove();
+		d3.selectAll('.hatty').remove();
 
 		let bubble = ds
 			.selectAll('g')
@@ -45,33 +43,7 @@ const BubbleChart = ({ data }) => {
 			.enter()
 			.append('g')
 			.attr('class', 'hatty')
-	
-		const drag = d3.drag().on('start', (d) => {
-			// d.fx = d3.event.x;
-			// d.fy = d3.event.y;
-			// simulation.force('center', d3.forceCenter(lastMouse.x ,lastMouse.y))
 
-			// console.log(lastMouse);
-
-		}).on('drag', (d) => {
-			simulation.alpha(0.3).restart();
-			d.fx = d3.event.x;
-			d.fy = d3.event.y;
-			// lastMouse = { x:  d3.event.x, y:  d3.event.y };
-			// console.log(lastMouse);
-			// ds.selectAll('g').attr("transform", `translate(${d3.event.x}, ${d3.event.y})`);
-			
-			// simulation.force('center', d3.forceCenter(d3.event.x + lastMouse.x ,d3.event.y + lastMouse.y))
-		}).on('end', (d) => {
-			console.log(d3.event);
-			// lastMouse = { x: d3.event.x, y: d3.event.y };
-			console.log(lastMouse);
-
-			d.fx = null;
-			d.fy = null;
-		})
-		
-		// ds.selectAll('g').csall(drag)	
 
 		const circle = bubble
 			.append('a')
@@ -98,7 +70,7 @@ const BubbleChart = ({ data }) => {
 
 	}, [data])
 
-	return <svg className="mainsvg" ref={yeet} />
+	return <svg style={{position: 'fixed', top: 0, zIndex: -100}} className="mainsvg" ref={svgRef} />
 }
 
 export default BubbleChart;
