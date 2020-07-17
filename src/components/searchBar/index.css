@@ -14,6 +14,8 @@
           box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
   -webkit-transition: all 0.1s ease-in-out;
   transition: all 0.1s ease-in-out;
+  font-family: 'Roboto';
+  font-weight: 600;
 }
 
 .seachbar-container input:focus {
@@ -32,8 +34,8 @@
   color: white;
   -webkit-box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
           box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
-  -webkit-transition: all 0.3s ease-in-out;
-  transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 
 .seachbar-container button:hover {
