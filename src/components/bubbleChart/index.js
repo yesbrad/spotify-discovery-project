@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import { zoom } from 'd3';
 
-const BubbleChart = ({ data }) => {
+const BubbleChart = ({ data, onPlayTrack }) => {
 	const svgRef = useRef(null);
 	const zoomRef = useRef(null);
 
@@ -50,13 +50,22 @@ const BubbleChart = ({ data }) => {
 			.enter()
 			.append('g')
 			.attr('class', 'hatty')
+			.attr('transform', `translate(${width / 2}, ${height / 2})`)
 		
 		const circle = bubble
-			.append('a')
-			// .attr('href', 'http://www.google.com')
+			// .append('a')
+			// .attr('href', d => {
+			// 	return d.external_urls.spotify
+			// })
+			// .attr('target', '_blank')
 			.append('circle')
 			.attr('r', d => getSize(d))
+			// .attr('onclick', d => `onPlayTrack(${d.topTrackData.tracks[0].uri}}`)
 			.style('fill', d => `${getColor(d)}`)
+			.on('click', (d) => {
+				console.log('YO WE CLICKED');
+				onPlayTrack(d.topTrackData.tracks[0].uri);
+			})
 			
 		
 		const text = bubble
@@ -65,7 +74,8 @@ const BubbleChart = ({ data }) => {
 			.style('text-anchor', 'middle')
 			.style('dominant-baseline', "middle")
 			.style('font-size', d => `${getTextSize(d)}px`)
-			// .attr('fill', 'white')
+			.style('font-weight', 600)
+			.attr('fill', 'white')
 			.style('overflow', 'hidden');
 		
 		simulation.alpha(1).restart();
