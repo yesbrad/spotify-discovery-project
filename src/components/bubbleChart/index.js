@@ -1,8 +1,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
+import { zoom } from 'd3';
 
 const BubbleChart = ({ data }) => {
 	const svgRef = useRef(null);
+	const zoomRef = useRef(null);
 
 	const getSize = (artist) => {
 		
@@ -29,6 +31,9 @@ const BubbleChart = ({ data }) => {
 			.force('center', d3.forceCenter(width / 2, height / 2))
 			.force('collide', d3.forceCollide(d => getSize(d)))
 
+		// Remove all of the old element when we update data
+		d3.selectAll('.hatty').remove();
+		
 		const ds = d3
 			.select(svgRef.current)
 			.attr('width', width)
@@ -36,19 +41,16 @@ const BubbleChart = ({ data }) => {
 			.call(d3.zoom().on("zoom", function () {
 				ds.attr("transform", d3.event.transform)
 			}))
-			.append('g');
+			.selectAll('.zoomCon')
 
-		// Remove all of the old element when we update data
-		d3.selectAll('.hatty').remove();
-
-		let bubble = ds
+		const bubble = d3
+			.select(zoomRef.current)
 			.selectAll('g')
 			.data(data)
 			.enter()
 			.append('g')
 			.attr('class', 'hatty')
-
-
+		
 		const circle = bubble
 			.append('a')
 			// .attr('href', 'http://www.google.com')
@@ -66,19 +68,15 @@ const BubbleChart = ({ data }) => {
 			// .attr('fill', 'white')
 			.style('overflow', 'hidden');
 		
-
 		simulation.alpha(1).restart();
 		
 		simulation.nodes(data).on('tick', () => {
 			bubble.attr('transform', d => `translate(${d.x}, ${d.y})`)
 			// ds.attr("cx", d => d.x).attr("cy",d => d.y)
 		})
-
-		
-
 	}, [data])
 
-	return <svg style={{position: 'fixed', top: 0, zIndex: -100}} className="mainsvg" ref={svgRef} />
+	return <svg style={{position: 'fixed', top: 0, zIndex: -100}} className="mainsvg" ref={svgRef}><g className="zoomCon" ref={zoomRef}></g></svg>
 }
 
 export default BubbleChart;
