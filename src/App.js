@@ -6,8 +6,11 @@ import moment from 'moment';
 const api = 'https://api.spotify.com/v1';
 
 const App = () => {
-	const [data, setData] = useState([])
+	const [dataState, setDataState] = useState([])
 	const [searchQuery, setSearchQuery] = useState('indie')
+	const [d, setD] = useState(0)
+
+	let data = []
 
 	const CheckToken = () => new Promise(async (resolve, reject) => {
 
@@ -33,10 +36,10 @@ const App = () => {
 				}
 				
 				localStorage.setItem('expireTime', JSON.stringify({token: apiObject.token, expireTime: moment().add(res.expires_in, 'seconds')}))
-				console.log('Using saved new token', process.env.REACT_APP_REFRESH_TOKEN);
+				// console.log('Using saved new token', process.env.REACT_APP_REFRESH_TOKEN);
 				resolve(apiObject);
 			} else {
-				console.log('Using saved token');
+				// console.log('Using saved token');
 				resolve(apiObjectSave);
 			}
 		} catch (err) {
@@ -49,7 +52,7 @@ const App = () => {
 		try {
 			const tokenData = await CheckToken();
 			console.log(search);
-			const response = await fetch(`${api}/search?q=genre:"${search}"&type=artist&limit=50`, {
+			const response = await fetch(`${api}/search?q=genre:"${search}"&type=artist&limit=10`, {
 				method: 'get',
 				headers: {
 					'Authorization': `Bearer ${tokenData.token}`
@@ -57,7 +60,33 @@ const App = () => {
 			})
 			
 			const newData = await response.json();
-			setData(newData.artists.items);
+			// console.log(newData);
+
+			for (let i = 0; i < newData.artists.items.length; i++) {
+				const topTracksResponse = await fetch(`${api}/artists/${newData.artists.items[i].id}/top-tracks?country=AU`, {
+					method: 'get',
+					headers: {
+						'Authorization': `Bearer ${tokenData.token}`,
+						'Content-Type': 'application/json'
+					},
+				})
+
+				const topTrackData = await topTracksResponse.json();
+
+				const topTrackFeatureResponse = await fetch(`${api}/audio-features/${topTrackData.tracks[0].id}`, {
+					method: 'get',
+					headers: {
+						'Authorization': `Bearer ${tokenData.token}`,
+						'Content-Type': 'application/json'
+					},
+				})
+				const topTrackFeatureData = await topTrackFeatureResponse.json();
+
+				data = [...data, { ...newData.artists.items[i], topTrackData, topTrackFeatureData }] 
+				setDataState(data);
+			}
+
+			// console.log(data);
 		} catch (err) {
 			console.log(err.message);
 		}
@@ -65,7 +94,9 @@ const App = () => {
 
 	useEffect(() => {
 		// localStorage.clear();
-		getData('australian reggae fusion');
+		if (dataState.length === 0) {
+			getData('australian reggae fusion');
+		}
 	}, [])
 
   return (
@@ -74,7 +105,7 @@ const App = () => {
 			<input onChange={e => setSearchQuery(e.target.value)} value={searchQuery}></input>
 			<button >Search</button>
 		  </form>
-		<BubbleChart data={data} />
+		<BubbleChart data={dataState} />
     </div>
   );
 }

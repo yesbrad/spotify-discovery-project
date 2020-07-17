@@ -6,12 +6,16 @@ const BubbleChart = ({ data }) => {
 
 	const getSize = (artist) => {
 		
-		const size = (artist.popularity / 4) / (1 - (window.innerWidth / 1920)) + 50; 
+		const size = (artist.popularity / 2) / (1 - (window.innerWidth / 1920)) + 50; 
 		return size;
 	}
 
 	const getTextSize = (artist) => {
 		return (artist.popularity * 0.3) + 10;
+	}
+
+	const getColor = (artist) => {
+		return artist.topTrackFeatureData.energy > 0.5 ? 'blue' : 'tomato';
 	}
 
 	useEffect(() => {
@@ -21,7 +25,7 @@ const BubbleChart = ({ data }) => {
 		const width = window.innerWidth;
 
 		const simulation = d3.forceSimulation(data)
-			.force('charge', d3.forceManyBody().strength(300))
+			.force('charge', d3.forceManyBody().strength(500))
 			.force('center', d3.forceCenter(width / 2, height / 2))
 			.force('collide', d3.forceCollide(d => getSize(d)))
 
@@ -50,7 +54,7 @@ const BubbleChart = ({ data }) => {
 			// .attr('href', 'http://www.google.com')
 			.append('circle')
 			.attr('r', d => getSize(d))
-			.style('fill', `tomato`)
+			.style('fill', d => `${getColor(d)}`)
 			
 		
 		const text = bubble
@@ -63,10 +67,14 @@ const BubbleChart = ({ data }) => {
 			.style('overflow', 'hidden');
 		
 
+		simulation.alpha(1).restart();
+		
 		simulation.nodes(data).on('tick', () => {
 			bubble.attr('transform', d => `translate(${d.x}, ${d.y})`)
 			// ds.attr("cx", d => d.x).attr("cy",d => d.y)
 		})
+
+		
 
 	}, [data])
 
