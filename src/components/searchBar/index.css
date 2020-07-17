@@ -1,0 +1,43 @@
+.seachbar-container {
+  width: auto;
+  padding: 1rem;
+}
+
+.seachbar-container input {
+  font-size: 1.2rem;
+  height: 2rem;
+  width: 20%;
+  border-radius: 3rem;
+  border: 0;
+  padding: 0.5rem 2rem;
+  -webkit-box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
+  -webkit-transition: all 0.1s ease-in-out;
+  transition: all 0.1s ease-in-out;
+}
+
+.seachbar-container input:focus {
+  outline: 0;
+  border: 0;
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
+}
+
+.seachbar-container button {
+  background: #06e07b;
+  height: 3rem;
+  width: 8rem;
+  margin-left: 1rem;
+  border-radius: 3rem;
+  color: white;
+  -webkit-box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
+  -webkit-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+.seachbar-container button:hover {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+/*# sourceMappingURL=index.css.map */

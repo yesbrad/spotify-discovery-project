@@ -1,0 +1,60 @@
+
+// VARIABLES
+
+$primaryColor : rgb(6, 224, 123);
+$secondaryColor : rgb(228, 118, 255);
+$white: white;
+$black: rgb(29, 29, 29);
+$lightGray: rgb(199, 199, 199);
+$darkGray: rgb(88, 88, 88);
+
+$smallMobileSize : 500px;
+$mobileSize : 1000px;
+$tabletSize : 1300px;
+
+// PRESETS
+
+@mixin FlexCenter {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+@mixin DBorder {
+	border: 1px solid red;
+}
+
+@mixin Fill {
+	width: 100%;
+	height: 100%;
+}
+
+@mixin BackgroundImageCovered ($url) {
+	background-image: url($url);
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: cover;
+}
+
+@mixin ScrollBar($size, $foreground-color, $background-color: mix($foreground-color, white,  50%)) {
+	// For Google Chrome
+	&::-webkit-scrollbar {
+	  width:  $size;
+	  height: $size;
+	}
+  
+	&::-webkit-scrollbar-thumb {
+	  background: $foreground-color;
+	  border-radius: 10px;
+	}
+	
+	&::-webkit-scrollbar-track {
+	  background: $background-color;
+	}
+  
+	// For Internet Explorer
+	& {
+	  scrollbar-face-color: $foreground-color;
+	  scrollbar-track-color: $background-color;
+	}
+  }

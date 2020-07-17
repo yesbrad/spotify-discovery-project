@@ -2,15 +2,14 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import BubbleChart from './components/bubbleChart';
 import moment from 'moment';
+import SearchBar from './components/searchBar';
 
 const api = 'https://api.spotify.com/v1';
 
 const App = () => {
-	const [dataState, setDataState] = useState([])
-	const [searchQuery, setSearchQuery] = useState('indie')
-	const [d, setD] = useState(0)
+	const [dataState, setDataState] = useState([]);
 
-	let data = []
+let data = [];
 
 	const CheckToken = () => new Promise(async (resolve, reject) => {
 
@@ -101,10 +100,7 @@ const App = () => {
 
   return (
 	  <div className="App">
-		  <form onSubmit={(e) => { e.preventDefault(); getData(searchQuery);}}>
-			<input onChange={e => setSearchQuery(e.target.value)} value={searchQuery}></input>
-			<button >Search</button>
-		  </form>
+		<SearchBar onSearch={input => getData(input)} />
 		<BubbleChart data={dataState} />
     </div>
   );
