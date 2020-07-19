@@ -1,0 +1,17 @@
+.button-generic-container {
+  background: #06e07b;
+  height: 100%;
+  width: 100%;
+  border-radius: 3rem;
+  color: white;
+  -webkit-box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
+          box-shadow: 0 0.5rem 3rem 0 rgba(0, 0, 0, 0.3);
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+}
+
+.button-generic-container:hover {
+  -webkit-transform: scale(1.1);
+          transform: scale(1.1);
+}
+/*# sourceMappingURL=index.css.map */

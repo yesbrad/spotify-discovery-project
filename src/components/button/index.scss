@@ -1,0 +1,16 @@
+@import '../../styles/config.scss';
+
+
+.button-generic-container {
+	background: $primaryColor;
+	height: 100%;
+	width: 100%;
+	border-radius: 3rem;
+	color: white;
+	box-shadow: 0 0.5rem 3rem 0 rgba(0,0,0,0.3);
+	transition: all 0.2s ease-in-out;
+}
+
+.button-generic-container:hover {
+	transform: scale(1.1);
+}

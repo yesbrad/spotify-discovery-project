@@ -4,6 +4,8 @@
 	// background: $white;
 	width: auto;
 	padding: 1rem;
+	display: flex;
+	flex-direction: row;
 	
 	input{
 		font-size: 1.2rem;
@@ -26,18 +28,9 @@
 		transform: scale(1.05);
 	}
 
-	button {
-		background: $primaryColor;
+	.searchbar-button {
 		height: 3rem;
-		width: 8rem;
+		width: 12rem;
 		margin-left: 1rem;
-		border-radius: 3rem;
-		color: white;
-		box-shadow: 0 0.5rem 3rem 0 rgba(0,0,0,0.3);
-		transition: all 0.2s ease-in-out;
-	}
-
-	button:hover {
-		transform: scale(1.1);
 	}
 }

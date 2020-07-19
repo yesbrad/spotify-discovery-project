@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './index.css';
+import Button from '../button';
 
 const SearchBar = ({ onSearch }) => {
 	const [searchQuery, setSearchQuery] = useState('indie')
@@ -7,7 +8,7 @@ const SearchBar = ({ onSearch }) => {
 	return (
 		<form className="seachbar-container"  onSubmit={(e) => { e.preventDefault(); onSearch(searchQuery);}}>
 			<input onChange={e => setSearchQuery(e.target.value)} value={searchQuery}></input>
-			<button >Search</button>
+			<div className="searchbar-button"><Button title="Search" onClick={() => onSearch(searchQuery)}/></div>
 		</form>
 	)
 }

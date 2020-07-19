@@ -12,6 +12,7 @@ const redirect_uri = 'http://localhost:3000/';
 const App = () => {
 	const [dataState, setDataState] = useState([]);
 	const [authError, SetAuthError] = useState(false);
+	const [hasLoaded, SetHasLoaded] = useState(false);
 
 	let data = [];
 
@@ -153,7 +154,7 @@ const App = () => {
 				const topTrackFeatureData = await topTrackFeatureResponse.json();
 
 				data = [...data, { ...newData[i], topTrackData, topTrackFeatureData }] 
-				console.log(data);
+				// console.log(data);
 				setDataState(data);
 			}
 		} catch (err) {
@@ -168,20 +169,33 @@ const App = () => {
 
 		if (urlParams.has('code')) {
 			localStorage.setItem('authCode', urlParams.get('code'))
-		} else {
-			console.log('MISSING CODE');
 		}
 	}
 
-	const checkAuthState = () => {
-		const apiObjectSave = JSON.parse(localStorage.getItem('expireTime'));
-		SetAuthError(apiObjectSave === null ? true : false);
+	const checkAuthState = async () => {
+		const hasCode = localStorage.getItem('authCode');
+		console.log('checking auth state');
+		
+		if (hasCode) {
+			try {	
+				await getToken();
+				SetAuthError(false);
+			} catch {
+				SetAuthError(true);
+			}
+		}
+	}
+
+	const startUp = async () => {
+		SetHasLoaded(false);
+		saveQueryCode();
+		await checkAuthState();
+		getData('australian reggae fusion');
+		SetHasLoaded(true);
 	}
 
 	useEffect(() => {
-		saveQueryCode();
-		checkAuthState();
-		getData('australian reggae fusion');
+		startUp();
 	}, [])
 
 	const onConnectSpotifyPlayer = async (uri, code) => {
@@ -212,6 +226,7 @@ const App = () => {
 		}
 	}
 	
+	if(!hasLoaded) return <span>LOADING</span>
 
 	return (
 		<div className="App">
