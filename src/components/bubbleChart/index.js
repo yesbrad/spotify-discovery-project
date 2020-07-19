@@ -1,6 +1,5 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
-import { zoom } from 'd3';
 
 const BubbleChart = ({ data, onPlayTrack }) => {
 	const svgRef = useRef(null);
@@ -52,23 +51,16 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 			.attr('class', 'hatty')
 			.attr('transform', `translate(${width / 2}, ${height / 2})`)
 		
-		const circle = bubble
-			// .append('a')
-			// .attr('href', d => {
-			// 	return d.external_urls.spotify
-			// })
-			// .attr('target', '_blank')
+		bubble
 			.append('circle')
 			.attr('r', d => getSize(d))
-			// .attr('onclick', d => `onPlayTrack(${d.topTrackData.tracks[0].uri}}`)
 			.style('fill', d => `${getColor(d)}`)
 			.on('click', (d) => {
-				console.log('YO WE CLICKED');
 				onPlayTrack(d.topTrackData.tracks[0].uri);
 			})
 			
 		
-		const text = bubble
+		bubble
 			.append('text')
 			.text(d => d.name)
 			.style('text-anchor', 'middle')
