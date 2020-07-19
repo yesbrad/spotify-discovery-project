@@ -1,0 +1,30 @@
+@import '../../styles/config.scss';
+
+.login-container {
+	@include FlexCenter;
+	height: 100vh;
+	width: 100%;
+	flex-direction: column;
+
+	#login-center-container {
+		// @include DBorder;
+		width: 50%;
+		padding: 5rem;
+		box-sizing: border-box;
+
+		@media screen and (max-width: $tabletSize) {
+			width: 80%;
+		}
+
+		span {
+			font-size: 5rem;
+			font-weight: 700;
+		}
+
+		.login-button {
+			margin-top: 2rem;
+			width: 50%;
+			height: 4rem;
+		}
+	}
+}

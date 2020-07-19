@@ -5,6 +5,7 @@ import moment from 'moment';
 import SearchBar from './components/searchBar';
 import crypto from 'crypto';
 import { json } from 'd3';
+import Login from './components/login';
 
 const api = 'https://api.spotify.com/v1';
 const redirect_uri = 'http://localhost:3000/';
@@ -91,7 +92,7 @@ const App = () => {
 		return crypto.createHash('sha256').update(buffer).digest();
 	}
 
-	const getAccessCode = async () => {
+	const onLogin = async () => {
 		try {
 			const verifier = base64URLEncode(crypto.randomBytes(32));
 			const hash = base64URLEncode(sha256(verifier));
@@ -228,11 +229,13 @@ const App = () => {
 	
 	if(!hasLoaded) return <span>LOADING</span>
 
+	if(authError) return <Login onLogin={() => onLogin()} />
+
 	return (
 		<div className="App">
-			{authError && <button onClick={() => getAccessCode()}>LOGIN</button>}
+			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}
 			<button onClick={() => localStorage.clear()}>CLEAR STORAGE</button>
-			<span>{`Error: ${authError}`}</span>
+			{/* <span>{`Error: ${authError}`}</span> */}
 			<SearchBar onSearch={input => getData(input)} />
 			<BubbleChart data={dataState} onPlayTrack={(uri) => onConnectSpotifyPlayer(uri)}/>
 		</div>
