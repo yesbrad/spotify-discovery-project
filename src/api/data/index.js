@@ -11,7 +11,7 @@ export const getData = async (search, onLoadedArtist) => {
 	let amount = 0;
 
 	for (let i = 0; i < 1; i++){
-		const response = await fetch(`${api}/search?q=genre:"${search}"&type=artist&offset=${amount}&limit=10`, {
+		const response = await fetch(`${api}/search?q=genre:"${search}"&type=artist&offset=${amount}&limit=50`, {
 			method: 'get',
 			headers: {
 				'Authorization': `Bearer ${tokenData.token}`

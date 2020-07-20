@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import './App.css';
 import BubbleChart from './components/bubbleChart';
 import SearchBar from './components/searchBar';
@@ -6,11 +6,19 @@ import Login from './components/login';
 import { getToken, onLogin } from './api/auth';
 import { getData } from './api/data';
 import { play } from './api/player';
+import Player from './components/player';
 
 const App = () => {
 	const [dataState, setDataState] = useState([]);
 	const [authError, SetAuthError] = useState(false);
 	const [hasLoaded, SetHasLoaded] = useState(false);
+	const audRef = useRef();
+
+	const [currentSongData, setCurrentSongData] = useState({
+		title: '',
+		artists: [],
+		image: '',
+	})
 
 	const saveQueryCode = () => {
 		const queryString = window.location.search;
@@ -22,16 +30,13 @@ const App = () => {
 	}
 
 	const checkAuthState = async () => {
-		const hasCode = localStorage.getItem('authCode');
 		console.log('checking auth state');
 		
-		if (hasCode) {
-			try {	
-				await getToken();
-				SetAuthError(false);
-			} catch {
-				SetAuthError(true);
-			}
+		try {	
+			await getToken();
+			SetAuthError(false);
+		} catch {
+			SetAuthError(true);
 		}
 	}
 
@@ -56,6 +61,17 @@ const App = () => {
 			console.log(err);
 		}
 	};
+
+	const playSong = (input) => {
+		audRef.current.src = input.preview_url;
+		audRef.current.play();
+		
+		setCurrentSongData({
+			title: input.name,
+			artists: input.artists,
+			image: input.album.images[0],
+		})
+	}
 	
 	if(!hasLoaded) return <span>LOADING</span>
 
@@ -64,10 +80,12 @@ const App = () => {
 	return (
 		<div className="App">
 			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}
-			<button onClick={() => localStorage.clear()}>CLEAR STORAGE</button>
+			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
 			<SearchBar onSearch={input => getMusicData(input)} />
-			<BubbleChart data={dataState} onPlayTrack={(uri) => play(uri)}/>
+			<Player songData={currentSongData}/>
+			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)}/>
+			<audio ref={audRef} />
 		</div>
 	);
 }
