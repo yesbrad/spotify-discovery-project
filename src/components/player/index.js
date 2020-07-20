@@ -3,7 +3,6 @@ import './index.css';
 import Button from '../button';
 
 const Player = ({ songData, onPlay }) => {
-	console.log(songData.image);
 	return (
 		<div className="player-container">
 			<div className="player-song-image-container">

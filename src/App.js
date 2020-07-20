@@ -53,6 +53,8 @@ const App = () => {
 	}, [])
 
 	const getMusicData = async (search) => {
+		console.log('CLICKED', search);
+
 		try {
 			getData(search, (data) => {
 				setDataState(data);

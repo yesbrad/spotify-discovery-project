@@ -19,20 +19,25 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 		return artist.topTrackFeatureData.energy > 0.5 ? 'blue' : 'tomato';
 	}
 
+
+
+	// useEffect(())
+
 	useEffect(() => {
 		if (!data) return;
+
 
 		const height = window.innerHeight;
 		const width = window.innerWidth;
 
 		const simulation = d3.forceSimulation(data)
-			.force('charge', d3.forceManyBody().strength(500))
-			.force('center', d3.forceCenter(width / 2, height / 2))
-			.force('collide', d3.forceCollide(d => getSize(d)))
+			.force("x", d3.forceX(width / 2).strength(0.01))
+			.force("y", d3.forceY(height / 2).strength(0.01))
+			.force('collide', d3.forceCollide(d => getSize(d) + 10))
 
 		// Remove all of the old element when we update data
 		d3.selectAll('.hatty').remove();
-		
+
 		const ds = d3
 			.select(svgRef.current)
 			.attr('width', width)
@@ -48,10 +53,13 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 			.data(data)
 			.enter()
 			.append('g')
+			// .merge(ds)
 			.attr('class', 'hatty')
-			.attr('transform', `translate(${width / 2}, ${height / 2})`)
+			.attr('transform', `translate(${width}, ${0})`)
 		
-		bubble
+			// bubble.exit().remove();;
+				
+		const circle = bubble
 			.append('circle')
 			.attr('r', d => getSize(d))
 			.style('fill', d => `${getColor(d)}`)
@@ -60,7 +68,6 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 				onPlayTrack(d.topTrackData.tracks[0]);
 			})
 			
-		
 		bubble
 			.append('text')
 			.text(d => d.name)
@@ -71,8 +78,9 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 			.attr('fill', 'white')
 			.style('overflow', 'hidden');
 		
-		simulation.alpha(1).restart();
 		
+		simulation.restart();
+
 		simulation.nodes(data).on('tick', () => {
 			bubble.attr('transform', d => `translate(${d.x}, ${d.y})`)
 			// ds.attr("cx", d => d.x).attr("cy",d => d.y)

@@ -8,7 +8,7 @@ const SearchBar = ({ onSearch }) => {
 	return (
 		<form className="seachbar-container"  onSubmit={(e) => { e.preventDefault(); onSearch(searchQuery);}}>
 			<input onChange={e => setSearchQuery(e.target.value)} value={searchQuery}></input>
-			<div className="searchbar-button"><Button title="Search" onClick={() => onSearch(searchQuery)}/></div>
+			<div className="searchbar-button"><Button title="Search" onClick={() => { return;}}/></div>
 		</form>
 	)
 }
