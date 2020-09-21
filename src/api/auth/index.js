@@ -81,8 +81,11 @@ export const onLogin = async () => {
 		const verifier = base64URLEncode(crypto.randomBytes(32));
 		const hash = base64URLEncode(sha256(verifier));
 		
-		const authResponse = await fetch(`https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${redirect_uri}&code_challenge_method=S256&code_challenge=${hash}&scope=user-modify-playback-state user-read-playback-state`, {
+		const authResponse = await fetch(`https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${redirect_uri}&code_challenge_method=S256&code_challenge=${hash}&scope=user-modify-playback-state user-read-playback-state user-library-modify`, {
 			method: 'get',
+			headers: {
+				"Access-Control-Allow-Origin": "*",
+			}
 		});
 
 		if (authResponse.redirected) {

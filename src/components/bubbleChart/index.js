@@ -6,7 +6,6 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 	const zoomRef = useRef(null);
 
 	const getSize = (artist) => {
-		
 		const size = (artist.popularity / 2) / (1 - (window.innerWidth / 1920)) + 50; 
 		return size;
 	}

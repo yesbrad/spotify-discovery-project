@@ -11,13 +11,16 @@ import Player from './components/player';
 const App = () => {
 	const [dataState, setDataState] = useState([]);
 	const [authError, SetAuthError] = useState(false);
-	const [hasLoaded, SetHasLoaded] = useState(false);
+	const [hasLoaded, SetHasLoaded] = useState(false); 
+	const [isLoading, SetIsLoading] = useState(false);
+
 	const audRef = useRef();
 
 	const [currentSongData, setCurrentSongData] = useState({
 		title: '',
 		artists: [],
 		image: '',
+		id: ''
 	})
 
 	const saveQueryCode = () => {
@@ -44,7 +47,7 @@ const App = () => {
 		SetHasLoaded(false);
 		saveQueryCode();
 		await checkAuthState();
-		getMusicData('australian reggae fusion');
+		//getMusicData('australian reggae fusion');
 		SetHasLoaded(true);
 	}
 
@@ -53,25 +56,36 @@ const App = () => {
 	}, [])
 
 	const getMusicData = async (search) => {
+		
+		if (isLoading) return;
+		
 		console.log('CLICKED', search);
+		SetIsLoading(true);
+
+		setDataState([]);
 
 		try {
-			getData(search, (data) => {
+			await getData(search, (data) => {
 				setDataState(data);
-			})
+			});
 		} catch (err) {
 			console.log(err);
 		}
+
+		SetIsLoading(false)
 	};
 
 	const playSong = (input) => {
 		audRef.current.src = input.preview_url;
 		audRef.current.play();
 		
+console.log(input);
+
 		setCurrentSongData({
 			title: input.name,
 			artists: input.artists,
 			image: input.album.images[0],
+			id: input.id,
 		})
 	}
 	
@@ -84,7 +98,7 @@ const App = () => {
 			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}
 			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
-			<SearchBar onSearch={input => getMusicData(input)} />
+			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading}/>
 			<Player songData={currentSongData}/>
 			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)}/>
 			<audio ref={audRef} />

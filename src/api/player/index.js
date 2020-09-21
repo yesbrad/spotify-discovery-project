@@ -49,3 +49,24 @@ export const play = async (uri) => {
 		console.log(err);
 	}
 }
+
+export const likeSong = async (id) => {
+	try {
+		const tokenData = await getToken();
+		const track = await fetch(`https://api.spotify.com/v1/me/tracks`, {
+			method: 'put',
+			headers: {
+				"Authorization": `Bearer ${tokenData.token}`,
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				ids: [id]
+			}),
+		});
+		console.log("finsihed the like");
+		const trackData = await track.text();
+		console.log(trackData);
+	} catch (err) {
+		console.log(err);
+	}
+}
