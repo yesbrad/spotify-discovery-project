@@ -62,6 +62,7 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 			.on('click', (d) => {
 				console.log(d.topTrackData.tracks[0]);
 				onPlayTrack(d.topTrackData.tracks, 0);
+				d.hasPlayed = true;
 			})
 			
 		bubble
@@ -70,8 +71,9 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 			.style('text-anchor', 'middle')
 			.style('dominant-baseline', "middle")
 			.style('font-size', d => `${getTextSize(d)}px`)
-			.style('font-weight', 600)
+			.style('font-weight', d => d.hasPlayed ? 100 : 600 )
 			.attr('fill', 'white')
+			.attr('pointer-events', 'none')
 			.style('overflow', 'hidden');
 		
 		
