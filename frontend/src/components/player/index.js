@@ -8,7 +8,7 @@ import {
 	FaPause
 } from 'react-icons/fa';
 
-const Player = ({ songData, onPause, paused }) => {
+const Player = ({ songData, onPause, paused, onNextSong }) => {
 	const { title, artists, image, id } = songData;
 
 	return (
@@ -26,7 +26,7 @@ const Player = ({ songData, onPause, paused }) => {
 				<button className="player-pause" onClick={ () => onPause(!paused)}>
 					{paused ? <FaPlay /> : <FaPause />}
 				</button>
-				<button>
+				<button onClick={onNextSong}>
 					<FaStepForward />
 				</button>
 			</div>

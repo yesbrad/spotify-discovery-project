@@ -17,6 +17,8 @@ const App = () => {
 	const [isLoading, SetIsLoading] = useState(false);
 	const [currentCategory, setCurrentCategory] = useState(0)
 	const [isPaused, SetIsPaused] = useState(true);
+	const [currentTracks, setCurrentTracks] = useState(null)
+	const [currentTrack, setCurrentTrack] = useState(0)
 
 	const audRef = useRef();
 
@@ -89,20 +91,46 @@ const App = () => {
 		SetIsLoading(false)
 	};
 
-	const playSong = (input) => {
-		audRef.current.src = input.preview_url;
+	const onNextSong = () => {
+		if (currentTracks === null) {
+			return;
+		}
+
+		console.log(currentTracks);
+
+		audRef.current.src = currentTracks[currentTrack + 1].preview_url;
 		
 		onPause(false);
 		audRef.current.play();
 
-		
-console.log(input);
+		if(currentTrack > currentTracks.length - 3)
+			setCurrentTrack(0);
+		else
+			setCurrentTrack(currentTrack + 1);
 
 		setCurrentSongData({
-			title: input.name,
-			artists: input.artists,
-			image: input.album.images[0],
-			id: input.id,
+			title: currentTracks[currentTrack + 1].name,
+			artists: currentTracks[currentTrack + 1].artists,
+			image: currentTracks[currentTrack + 1].album.images[0],
+			id: currentTracks[currentTrack + 1].id,
+		})
+	}
+
+	const playSong = (tracks, track) => {
+		audRef.current.src = tracks[track].preview_url;
+		
+		onPause(false);
+		audRef.current.play();
+
+		console.log(tracks[track]);
+		setCurrentTracks(tracks);
+		setCurrentTrack(0);
+
+		setCurrentSongData({
+			title: tracks[track].name,
+			artists: tracks[track].artists,
+			image: tracks[track].album.images[0],
+			id: tracks[track].id,
 		})
 	}
 	
@@ -119,8 +147,8 @@ console.log(input);
 				<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
 				<ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} />
 			</div>
-			<Player songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
-			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)} viewCategory={ViewCategorys[currentCategory]}/>
+			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
+			<BubbleChart data={dataState} onPlayTrack={(uri, track) => playSong(uri, track)} viewCategory={ViewCategorys[currentCategory]}/>
 			<audio ref={audRef} />
 		</div>
 	);

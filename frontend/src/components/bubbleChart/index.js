@@ -61,7 +61,7 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 			.style('fill', d => getColor(d))
 			.on('click', (d) => {
 				console.log(d.topTrackData.tracks[0]);
-				onPlayTrack(d.topTrackData.tracks[0]);
+				onPlayTrack(d.topTrackData.tracks, 0);
 			})
 			
 		bubble
