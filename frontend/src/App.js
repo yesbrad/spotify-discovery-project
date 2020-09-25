@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './App.css';
+import './App.scss';
 import BubbleChart from './components/bubbleChart';
 import SearchBar from './components/searchBar';
 import Login from './components/login';
@@ -8,12 +8,14 @@ import { getData } from './api/data';
 import { play } from './api/player';
 import Player from './components/player';
 import ViewCategorys from './data/viewCategorys';
+import ViewCategoryBar from './components/viewCategoryBar';
 
 const App = () => {
 	const [dataState, setDataState] = useState([]);
 	const [authError, SetAuthError] = useState(false);
 	const [hasLoaded, SetHasLoaded] = useState(false); 
 	const [isLoading, SetIsLoading] = useState(false);
+	const [currentCategory, setCurrentCategory] = useState(0)
 
 	const audRef = useRef();
 
@@ -100,9 +102,12 @@ console.log(input);
 			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}
 			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
-			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading}/>
+			<div className="nav-top">
+				<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
+				<ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} />
+			</div>
 			<Player songData={currentSongData}/>
-			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)} viewCategory={ViewCategorys[1]}/>
+			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)} viewCategory={ViewCategorys[currentCategory]}/>
 			<audio ref={audRef} />
 		</div>
 	);

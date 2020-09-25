@@ -1,6 +1,7 @@
 const data = [
 	{
-		name: 'Engery',
+		name: 'Energy',
+		id: 'energy',
 		colors: [
 			"#ff0cda",
 			"#ff19b6",
@@ -15,7 +16,8 @@ const data = [
 		]
 	},
 	{
-		name: 'Soulness',
+		name: 'Acousticness',
+		id: 'acousticness',
 		colors: [
 			"#0ff",
 			"#0cdaff",
@@ -27,6 +29,38 @@ const data = [
 			"#3f48ff",
 			"#4536ff",
 			"#5212ff"
+		]
+	},
+	{
+		name: 'Happiness',
+		id: 'valence',
+		colors: [
+			"#0dff00",
+			"#0bf424",
+			"#0aee36",
+			"#08e35b",
+			"#06d97f",
+			"#05d391",
+			"#04cea3",
+			"#03c8b6",
+			"#02c3c8",
+			"#00b8ec"
+		]
+	},
+	{
+		name: 'Danceability',
+		id: 'danceability',
+		colors: [
+			"#ff000d",
+			"#f9120c",
+			"#ee360a",
+			"#e94809",
+			"#e35b08",
+			"#de6d07",
+			"#d39105",
+			"#c8b603",
+			"#bdda01",
+			"#b3ff00"
 		]
 	},
 ]

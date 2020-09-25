@@ -16,7 +16,7 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 	}
 
 	const getColor = (artist) => {
-		return viewCategory.colors[Math.floor(artist.topTrackFeatureData.energy * 10)];
+		return viewCategory.colors[Math.floor(artist.topTrackFeatureData[viewCategory.id] * 10)];
 	}
 
 	useEffect(() => {
@@ -81,7 +81,7 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 			bubble.attr('transform', d => `translate(${d.x}, ${d.y})`)
 			// ds.attr("cx", d => d.x).attr("cy",d => d.y)
 		})
-	}, [data])
+	}, [data, viewCategory])
 
 	return <svg style={{position: 'fixed', top: 0, zIndex: -100}} className="mainsvg" ref={svgRef}><g className="zoomCon" ref={zoomRef}></g></svg>
 }

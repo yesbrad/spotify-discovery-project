@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './index.css';
+import './index.scss';
 import Button from '../button';
 
 const SearchBar = ({ onSearch, isLoading }) => {

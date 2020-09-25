@@ -13,12 +13,13 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-icons": "^3.11.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-spring": "^8.0.27"
   },
   "scripts": {
     "start": "react-scripts start",
-		"build": "react-scripts build",
-		"deploy": "react-scripts build && firebase deploy",
+    "build": "react-scripts build",
+    "deploy": "react-scripts build && firebase deploy",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
