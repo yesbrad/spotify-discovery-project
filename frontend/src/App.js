@@ -28,6 +28,7 @@ const App = () => {
 		const urlParams = new URLSearchParams(queryString);
 
 		if (urlParams.has('code')) {
+			console.log(urlParams.get('code'));
 			localStorage.setItem('authCode', urlParams.get('code'))
 		}
 	}

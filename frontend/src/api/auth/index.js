@@ -43,7 +43,7 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 				reject(`Token Error: ${res['error']}`)
 				return;
 			}
-			
+
 			// Save a object storing the nessasy data
 			const apiObject = {
 				token: res.access_token,
@@ -65,32 +65,24 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 	}
 });
 
-const base64URLEncode = (str) => {
-	return str.toString('base64')
-		.replace(/\+/g, '-')
-		.replace(/\//g, '_')
-		.replace(/=/g, '');
-}
-
-const sha256 = (buffer) => {
-	return crypto.createHash('sha256').update(buffer).digest();
-}
-
 export const onLogin = async () => {
 	try {
-		const verifier = base64URLEncode(crypto.randomBytes(32));
-		const hash = base64URLEncode(sha256(verifier));
+		console.log('object');
 		
-		const authResponse = await fetch(`https://accounts.spotify.com/authorize?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&redirect_uri=${redirect_uri}&code_challenge_method=S256&code_challenge=${hash}&scope=user-modify-playback-state user-read-playback-state user-library-modify`, {
+		const api = 'https://us-central1-spotify-disovery.cloudfunctions.net/api/login';
+	//const api = 'http://localhost:5001/spotify-disovery/us-central1/api/login';
+
+		const res = await fetch(api, {
 			method: 'get',
-			headers: {
-				"Access-Control-Allow-Origin": "*",
-			}
 		});
 
-		if (authResponse.redirected) {
-			await localStorage.setItem('veri', verifier);
-			window.location.href = authResponse.url;
+		const data = await res.json();
+
+		console.log(data);
+
+		if (data.url) {
+			await localStorage.setItem('veri', data.verifier);
+			window.location.href = data.url;
 		}
 	} catch (err){
 		console.log(err.message);
