@@ -1,12 +1,13 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
+import { rgb } from 'd3';
 
-const BubbleChart = ({ data, onPlayTrack }) => {
+const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 	const svgRef = useRef(null);
 	const zoomRef = useRef(null);
 
 	const getSize = (artist) => {
-		const size = (artist.popularity / 2) / (1 - (window.innerWidth / 1920)) + 50; 
+		const size = (artist.popularity / 2) * 5; 
 		return size;
 	}
 
@@ -15,12 +16,8 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 	}
 
 	const getColor = (artist) => {
-		return artist.topTrackFeatureData.energy > 0.5 ? 'blue' : 'tomato';
+		return viewCategory.colors[Math.floor(artist.topTrackFeatureData.energy * 10)];
 	}
-
-
-
-	// useEffect(())
 
 	useEffect(() => {
 		if (!data) return;
@@ -32,7 +29,7 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 		const simulation = d3.forceSimulation(data)
 			.force("x", d3.forceX(width / 2).strength(0.01))
 			.force("y", d3.forceY(height / 2).strength(0.01))
-			.force('collide', d3.forceCollide(d => getSize(d) + 10))
+			.force('collide', d3.forceCollide(d => getSize(d)))
 
 		// Remove all of the old element when we update data
 		d3.selectAll('.hatty').remove();
@@ -61,7 +58,7 @@ const BubbleChart = ({ data, onPlayTrack }) => {
 		const circle = bubble
 			.append('circle')
 			.attr('r', d => getSize(d))
-			.style('fill', d => `${getColor(d)}`)
+			.style('fill', d => getColor(d))
 			.on('click', (d) => {
 				console.log(d.topTrackData.tracks[0]);
 				onPlayTrack(d.topTrackData.tracks[0]);

@@ -10,7 +10,7 @@ export const getData = async (search, onLoadedArtist) => {
 	let newData = []
 	let amount = 0;
 
-	for (let i = 0; i < 1; i++){
+	for (let i = 0; i < 6; i++){
 		const response = await fetch(`${api}/search?q=genre:"${search}"&type=artist&offset=${amount}&limit=50`, {
 			method: 'get',
 			headers: {
@@ -21,7 +21,7 @@ export const getData = async (search, onLoadedArtist) => {
 		const newDataSingle = await response.json();
 		// console.log(newDataSingle);
 		newData = [...newData, ...newDataSingle.artists.items]
-		amount += 1;
+		amount += 50;
 	}
 	
 	for (let i = 0; i < newData.length; i++) {

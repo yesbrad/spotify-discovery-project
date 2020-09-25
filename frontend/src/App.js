@@ -7,6 +7,7 @@ import { getToken, onLogin } from './api/auth';
 import { getData } from './api/data';
 import { play } from './api/player';
 import Player from './components/player';
+import ViewCategorys from './data/viewCategorys';
 
 const App = () => {
 	const [dataState, setDataState] = useState([]);
@@ -101,7 +102,7 @@ console.log(input);
 			{/* <span>{`Error: ${authError}`}</span> */}
 			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading}/>
 			<Player songData={currentSongData}/>
-			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)}/>
+			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)} viewCategory={ViewCategorys[1]}/>
 			<audio ref={audRef} />
 		</div>
 	);
