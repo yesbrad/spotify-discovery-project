@@ -16,6 +16,7 @@ const App = () => {
 	const [hasLoaded, SetHasLoaded] = useState(false); 
 	const [isLoading, SetIsLoading] = useState(false);
 	const [currentCategory, setCurrentCategory] = useState(0)
+	const [isPaused, SetIsPaused] = useState(true);
 
 	const audRef = useRef();
 
@@ -59,6 +60,15 @@ const App = () => {
 		startUp();
 	}, [])
 
+	const onPause = (pause) => {
+		if(isPaused)
+			audRef.current.play();
+		else
+			audRef.current.pause();
+		
+		SetIsPaused(pause);
+	}
+
 	const getMusicData = async (search) => {
 		
 		if (isLoading) return;
@@ -81,7 +91,10 @@ const App = () => {
 
 	const playSong = (input) => {
 		audRef.current.src = input.preview_url;
+		
+		onPause(false);
 		audRef.current.play();
+
 		
 console.log(input);
 
@@ -106,7 +119,7 @@ console.log(input);
 				<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
 				<ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} />
 			</div>
-			<Player songData={currentSongData}/>
+			<Player songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
 			<BubbleChart data={dataState} onPlayTrack={(uri) => playSong(uri)} viewCategory={ViewCategorys[currentCategory]}/>
 			<audio ref={audRef} />
 		</div>

@@ -18,7 +18,6 @@
 	.player-left {
 		display: flex;
 		flex-direction: row;
-		flex: 1;
 
 		.player-song-image-container {
 			height: 100%;
@@ -49,7 +48,19 @@
 	}
 
 	.player-center {
-
+		// @include DBorder;
+		position: absolute;
+		left: 40%;
+		right: 40%;
+		top: 0;
+		bottom: 0;
+		box-sizing: border-box;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		button {
+			font-size: 2rem;
+		}
 	}
 
 	.player-right {

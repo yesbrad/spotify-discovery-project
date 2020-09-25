@@ -27,8 +27,8 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 		const width = window.innerWidth;
 
 		const simulation = d3.forceSimulation(data)
-			.force("x", d3.forceX(width / 2).strength(0.01))
-			.force("y", d3.forceY(height / 2).strength(0.01))
+			.force("x", d3.forceX(width / 2).strength(0.001))
+			.force("y", d3.forceY(height / 2).strength(0.001))
 			.force('collide', d3.forceCollide(d => getSize(d)))
 
 		// Remove all of the old element when we update data
