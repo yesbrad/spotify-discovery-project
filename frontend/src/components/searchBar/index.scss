@@ -1,33 +1,64 @@
 @import '../../styles/config.scss';
 
+
+	
 .seachbar-container {
-	// background: $white;
-	width: 50%;
+	//background: red;
+	width: 40%;
 	padding: 1rem;
 	display: flex;
 	flex-direction: row;
-	
-	input{
-		font-size: 1.2rem;
-		height: 2rem;
-		width: 30%;
-		border-radius: 3rem;
-		border: 0;
-		// border: 1px solid;
-		// border-color: $darkGray;
-		padding: 0.5rem 2rem;
+
+	.search-bar-input {
 		box-shadow: 0 0.5rem 3rem 0 rgba(0,0,0,0.3);
-		transition: all 0.1s ease-in-out;
-		font-family: 'Roboto';
-		font-weight: 600;
-	}
+		border-radius: 1.5rem;
+		height: 35rem;
+		background-color: white;
 
-	input:focus {
-		outline: 0;
-		border: 0;
-		transform: scale(1.05);
-	}
+		input{
+			font-size: 1.2rem;
+			height: 2rem;
+			width: 20rem;
+			overflow: hidden;
+			border-radius: 1.5rem;
+			border: 0;
+			padding: 0.5rem 2rem;
+			transition: all 0.1s ease-in-out;
+			font-family: 'Roboto';
+			font-weight: 600;
+		}
 
+		input:focus {
+			outline: 0;
+			border: 0;
+			font-size: 1.5rem;
+		}
+
+		.search-auto-container{
+			display: flex;
+			flex-direction: column;
+			padding: 0.5rem 1.5rem;
+			width: 20rem;
+			height: 30rem;
+			overflow-y: scroll;
+			background-color: white;
+			position: absolute;
+			scrollbar-color: $darkGray white;
+
+			.search-bar-auto {
+				color: $darkGray;
+				font-size: 1.0rem;
+				display: flex;
+				flex-direction: column;
+				justify-content: flex-start;
+		
+				h3 {
+					text-align: left;
+				}
+			}
+		}
+	}
+	
 	.searchbar-button {
 		height: 3rem;
 		width: 12rem;

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import './App.scss';
+//import './App.scss';
 import BubbleChart from './components/bubbleChart';
 import SearchBar from './components/searchBar';
 import Login from './components/login';
@@ -139,14 +139,12 @@ const App = () => {
 	if(authError) return <Login onLogin={() => onLogin()} />
 
 	return (
-		<div className="App">
+		<div className="App" style={{height: 0}}>
 			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}
 			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
-			<div className="nav-top">
-				<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
-				<ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} />
-			</div>
+			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
+			<ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} />
 			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
 			<BubbleChart data={dataState} onPlayTrack={(uri, track) => playSong(uri, track)} viewCategory={ViewCategorys[currentCategory]}/>
 			<audio ref={audRef} />

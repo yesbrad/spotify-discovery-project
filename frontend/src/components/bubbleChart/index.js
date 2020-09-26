@@ -1,10 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import { rgb } from 'd3';
 
 const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 	const svgRef = useRef(null);
 	const zoomRef = useRef(null);
+	const [refrsh, setRefresh] = useState(1);
 
 	const getSize = (artist) => {
 		const size = (artist.popularity / 2) * 5; 
@@ -63,6 +64,7 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 				console.log(d.topTrackData.tracks[0]);
 				onPlayTrack(d.topTrackData.tracks, 0);
 				d.hasPlayed = true;
+				setRefresh(0);
 			})
 			
 		bubble
