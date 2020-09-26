@@ -1,6 +1,8 @@
 import * as functions from 'firebase-functions';
-export const redirect_uri = 'http://localhost:3000/'; 
+//export const redirect_uri = 'http://localhost:3000/'; 
 //export const redirect_uri = 'https://spotify-discovery.web.app/'
+export const redirect_uri = 'https://newsongsfanks.com.au/'
+
 const crypto = require('crypto');
 
 const express = require('express');

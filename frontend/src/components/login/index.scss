@@ -8,7 +8,7 @@
 
 	#login-center-container {
 		// @include DBorder;
-		width: 50%;
+		width: 70%;
 		padding: 5rem;
 		box-sizing: border-box;
 
@@ -16,9 +16,15 @@
 			width: 80%;
 		}
 
+		h1 {
+			font-size: 2rem;
+			font-weight: 900;
+			margin-bottom: 2rem;
+		}
+
 		span {
 			font-size: 5rem;
-			font-weight: 700;
+			font-weight: 600;
 		}
 
 		.login-button {

@@ -8,12 +8,12 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 	const [refrsh, setRefresh] = useState(1);
 
 	const getSize = (artist) => {
-		const size = (artist.popularity / 2) * 5; 
+		const size = (artist.popularity / 2) * 8 + 40; 
 		return size;
 	}
 
 	const getTextSize = (artist) => {
-		return (artist.popularity * 0.3) + 10;
+		return (artist.popularity * 0.5) + 5;
 	}
 
 	const getColor = (artist) => {
