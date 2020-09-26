@@ -9,6 +9,7 @@ import { play } from './api/player';
 import Player from './components/player';
 import ViewCategorys from './data/viewCategorys';
 import ViewCategoryBar from './components/viewCategoryBar';
+import Tutorial from './components/tutorial';
 
 const App = () => {
 	const [dataState, setDataState] = useState([]);
@@ -19,6 +20,9 @@ const App = () => {
 	const [isPaused, SetIsPaused] = useState(true);
 	const [currentTracks, setCurrentTracks] = useState(null)
 	const [currentTrack, setCurrentTrack] = useState(0)
+	const [currentSearch, setCurrentSearch] = useState('')
+	const [isTutorial, SetIsTutorial] = useState(true);
+
 
 	const audRef = useRef();
 
@@ -74,15 +78,20 @@ const App = () => {
 	const getMusicData = async (search) => {
 		
 		if (isLoading) return;
-		
+		SetIsTutorial(false);
+
 		console.log('CLICKED', search);
 		SetIsLoading(true);
 
+		setCurrentSearch(search);
 		setDataState([]);
 
 		try {
-			await getData(search, (data) => {
+			await getData(search, (data, originalSearch) => {
+				const valid = currentSearch === originalSearch;
+				//if(valid)
 				setDataState(data);
+				return true;
 			});
 		} catch (err) {
 			console.log(err);
@@ -118,7 +127,6 @@ const App = () => {
 
 	const playSong = (tracks, track) => {
 		audRef.current.src = tracks[track].preview_url;
-		
 		onPause(false);
 		audRef.current.play();
 
@@ -143,6 +151,7 @@ const App = () => {
 			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}
 			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
+			<Tutorial isTutorial={isTutorial}/>
 			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
 			<ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} />
 			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>

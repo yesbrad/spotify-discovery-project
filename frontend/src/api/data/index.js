@@ -9,6 +9,7 @@ export const getData = async (search, onLoadedArtist) => {
 
 	let newData = []
 	let amount = 0;
+	let valid = true;
 
 	for (let i = 0; i < 6; i++){
 		const response = await fetch(`${api}/search?q=genre:"${search}"&type=artist&offset=${amount}&limit=50`, {
@@ -25,6 +26,8 @@ export const getData = async (search, onLoadedArtist) => {
 	}
 	
 	for (let i = 0; i < newData.length; i++) {
+		if (!valid) return;
+
 		const topTracksResponse = await fetch(`${api}/artists/${newData[i].id}/top-tracks?country=AU`, {
 			method: 'get',
 			headers: {
@@ -45,7 +48,7 @@ export const getData = async (search, onLoadedArtist) => {
 		const topTrackFeatureData = await topTrackFeatureResponse.json();
 
 		data = [...data, { ...newData[i], topTrackData, topTrackFeatureData }] 
-		onLoadedArtist(data);
+		valid = onLoadedArtist(data, search);
 	}
 
 	return 'Finished';
