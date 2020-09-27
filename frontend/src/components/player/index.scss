@@ -14,15 +14,24 @@
 	justify-content: space-between;
 	padding: 1rem 2rem;
 	box-sizing: border-box;
+	//z-index: -10;
+
+	@media screen and (max-width: $tabletSize) {
+		padding: 0.5rem 1rem;
+	}
 
 	.player-left {
 		display: flex;
 		flex-direction: row;
-
+		// @include DBorder;
+		
 		.player-song-image-container {
 			height: 100%;
 			width: 7rem;
 
+			@media screen and (max-width: $tabletSize) {
+				width: 4.2rem;
+			}
 
 			.player-song-image {
 				width: 100%;
@@ -39,10 +48,17 @@
 			h2 {
 				font-weight: 700;
 				font-size: 1.5rem;
+
+				@media screen and (max-width: $tabletSize) {
+					font-size: 0.8rem;
+				}
 			}
 
 			span {
 				color: $darkGray;
+				@media screen and (max-width: $tabletSize) {
+					font-size: 0.7rem;
+				}
 			}
 		}
 	}
@@ -58,13 +74,33 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		// @include DBorder;
+		
+		@media screen and (max-width: $tabletSize) {
+			right: 0;
+			justify-content: flex-end;
+			padding-right: 1rem;
+			left: 60%;
+		}
+
 		button {
-			font-size: 2rem;
+			font-size: 1.6rem;
+		}
+
+		.player-mobile-like {
+			@media screen and (min-width: $tabletSize) {
+				display: none;
+			}
 		}
 	}
 
 	.player-right {
 		display: grid;
 		place-items: center;
+
+		@media screen and (max-width: $tabletSize) {
+			display: none;
+			
+		}
 	}
 }

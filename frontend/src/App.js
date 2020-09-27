@@ -38,13 +38,13 @@ const App = () => {
 		const urlParams = new URLSearchParams(queryString);
 
 		if (urlParams.has('code')) {
-			console.log(urlParams.get('code'));
+			//console.log(urlParams.get('code'));
 			localStorage.setItem('authCode', urlParams.get('code'))
 		}
 	}
 
 	const checkAuthState = async () => {
-		console.log('checking auth state');
+		//console.log('checking auth state');
 		
 		try {	
 			await getToken();
@@ -80,7 +80,7 @@ const App = () => {
 		if (isLoading) return;
 		SetIsTutorial(false);
 
-		console.log('CLICKED', search);
+		//console.log('CLICKED', search);
 		SetIsLoading(true);
 
 		setCurrentSearch(search);
@@ -105,7 +105,7 @@ const App = () => {
 			return;
 		}
 
-		console.log(currentTracks);
+		//console.log(currentTracks);
 
 		audRef.current.src = currentTracks[currentTrack + 1].preview_url;
 		
@@ -130,7 +130,7 @@ const App = () => {
 		onPause(false);
 		audRef.current.play();
 
-		console.log(tracks[track]);
+		//console.log(tracks[track]);
 		setCurrentTracks(tracks);
 		setCurrentTrack(0);
 

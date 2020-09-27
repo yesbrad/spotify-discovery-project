@@ -67,7 +67,7 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 
 export const onLogin = async () => {
 	try {
-		console.log('object');
+		//console.log('object');
 		
 		const api = 'https://us-central1-spotify-disovery.cloudfunctions.net/api/login';
 	//const api = 'http://localhost:5001/spotify-disovery/us-central1/api/login';
@@ -78,7 +78,7 @@ export const onLogin = async () => {
 
 		const data = await res.json();
 
-		console.log(data);
+		//console.log(data);
 
 		if (data.url) {
 			await localStorage.setItem('veri', data.verifier);

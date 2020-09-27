@@ -10,7 +10,7 @@ const LikeButton = ({ id }) => {
 
 	return (
 		<button className="like-container" onClick={onLike}>
-			<FaHeart />
+			<FaHeart className="like-container-icon"/>
 		</button>
 	)
 }

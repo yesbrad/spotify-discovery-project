@@ -5,7 +5,7 @@ export const getData = async (search, onLoadedArtist) => {
 	let data = [];
 	
 	const tokenData = await getToken();
-	console.log(tokenData);
+	//console.log(tokenData);
 
 	let newData = []
 	let amount = 0;

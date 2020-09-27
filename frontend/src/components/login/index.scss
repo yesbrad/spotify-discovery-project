@@ -13,24 +13,38 @@
 		box-sizing: border-box;
 
 		@media screen and (max-width: $tabletSize) {
-			width: 80%;
+			width: 100%;
+			padding: 1.5rem;
 		}
 
 		h1 {
 			font-size: 2rem;
 			font-weight: 900;
 			margin-bottom: 2rem;
+
+			@media screen and (max-width: $tabletSize) {
+				width: 100%;
+				font-size: 1.6rem;
+			}
 		}
 
 		span {
 			font-size: 5rem;
 			font-weight: 600;
+
+			@media screen and (max-width: $tabletSize) {
+				font-size: 4rem;
+			}
 		}
 
 		.login-button {
 			margin-top: 2rem;
 			width: 50%;
 			height: 4rem;
+
+			@media screen and (max-width: $tabletSize) {
+				width: 100%;
+			}
 		}
 	}
 }

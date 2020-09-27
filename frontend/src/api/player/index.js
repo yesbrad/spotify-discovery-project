@@ -63,9 +63,9 @@ export const likeSong = async (id) => {
 				ids: [id]
 			}),
 		});
-		console.log("finsihed the like");
+		//console.log("finsihed the like");
 		const trackData = await track.text();
-		console.log(trackData);
+		//console.log(trackData);
 	} catch (err) {
 		console.log(err);
 	}

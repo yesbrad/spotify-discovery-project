@@ -60,8 +60,9 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 			.append('circle')
 			.attr('r', d => getSize(d))
 			.style('fill', d => getColor(d))
+			.style('z-index', '-30')
 			.on('click', (d) => {
-				console.log(d.topTrackData.tracks[0]);
+				//console.log(d.topTrackData.tracks[0]);
 				onPlayTrack(d.topTrackData.tracks, 0);
 				d.hasPlayed = true;
 				setRefresh(0);

@@ -21,7 +21,7 @@ const Player = ({ songData, onPause, paused, onNextSong }) => {
 					<h2>{title}</h2>
 					{artists.map((art) => <span>{art.name}</span>)}
 				</div>
-			</div>
+			</div>	
 			<div className="player-center">
 				<button className="player-pause" onClick={ () => onPause(!paused)}>
 					{paused ? <FaPlay /> : <FaPause />}
@@ -29,6 +29,9 @@ const Player = ({ songData, onPause, paused, onNextSong }) => {
 				<button onClick={onNextSong}>
 					<FaStepForward />
 				</button>
+				<div className="player-mobile-like">
+					{id && <LikeButton id={id} />}
+				</div>
 			</div>
 			<div className="player-right">
 				{id && <LikeButton id={id} />}
