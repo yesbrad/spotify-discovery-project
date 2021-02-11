@@ -70,8 +70,8 @@ export const onLogin = async () => {
 		//console.log('object');
 		
 		const api = 'https://us-central1-spotify-disovery.cloudfunctions.net/api/login';
-	//const api = 'http://localhost:5001/spotify-disovery/us-central1/api/login';
-
+	//const api = 'http://localhost:5000/spotify-disovery/us-central1/api/login';
+		console.log("Usinbg Local host");
 		const res = await fetch(api, {
 			method: 'get',
 		});

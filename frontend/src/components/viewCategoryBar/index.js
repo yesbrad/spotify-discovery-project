@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import './index.scss';
 import Button from '../button';
-import { HiChevronDown } from 'react-icons/hi';
+import { HiChevronDown, HiX } from 'react-icons/hi';
 import { useSpring, animated } from 'react-spring';
 
-const ViewCategoryBar = ({ categorys,  onSelectViewCategory }) => {
+const ViewCategoryBar = ({ categorys,  onSelectViewCategory, onHide }) => {
 	const [currentCategory, setCurrentCategory] = useState(0)
 	const [isMore, setMore] = useState(false);
 
@@ -28,6 +28,11 @@ const ViewCategoryBar = ({ categorys,  onSelectViewCategory }) => {
 				<animated.button style={spring} className="view-bar-more" onClick={() => setMore(!isMore)}>
 					<HiChevronDown />
 				</animated.button>
+
+				<button className="view-bar-hide" onClick={() => onHide()}>
+					<HiX />
+				</button>
+
 				{isMore && categorys.map((cat, i) => (
 					<button className="view-bar-select" onClick={() => onSelectCategory(i)}>
 						<h3>{cat.name}</h3>

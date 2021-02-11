@@ -22,6 +22,7 @@ const App = () => {
 	const [currentTrack, setCurrentTrack] = useState(0)
 	const [currentSearch, setCurrentSearch] = useState('')
 	const [isTutorial, SetIsTutorial] = useState(true);
+	const [isCategoryOpen, SetIsCategoryOpen] = useState(true);
 
 
 	const audRef = useRef();
@@ -153,7 +154,7 @@ const App = () => {
 			{/* <span>{`Error: ${authError}`}</span> */}
 			<Tutorial isTutorial={isTutorial}/>
 			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
-			<ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} />
+			{isCategoryOpen && <ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} onHide={() => SetIsCategoryOpen(!isCategoryOpen) }/>}
 			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
 			<BubbleChart data={dataState} onPlayTrack={(uri, track) => playSong(uri, track)} viewCategory={ViewCategorys[currentCategory]}/>
 			<audio ref={audRef} />

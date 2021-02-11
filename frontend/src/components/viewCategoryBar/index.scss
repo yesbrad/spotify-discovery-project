@@ -9,11 +9,12 @@
 	position: absolute;
 	right: 0;
 	top: 0;
-	left: 70%;
+	left: 75%;
 
 	@media screen and (max-width: $tabletSize) {
 		top: 8rem;
 		left: 0;
+		display: none;
 		//width: 100%;
 
 	}
@@ -28,12 +29,25 @@
 		box-shadow: 0 0.5rem 3rem 0 rgba(0,0,0,0.3);
 		transition: all 0.1s ease-in-out;
 		background-color: white;
-		
+		position: relative;
+
 		h3{
 			font-family: 'Roboto';
 			font-weight: 600;
 			font-size: 1rem;
 			margin-bottom: 0.5rem;
+		}
+
+		.view-bar-hide {
+			position: absolute;
+			top: 0;
+			right: 0;
+			width: 2rem;
+			height: 2rem;
+
+			&:hover {
+				transform: scale(1.1);
+			}
 		}
 
 		.view-bar-color-container{

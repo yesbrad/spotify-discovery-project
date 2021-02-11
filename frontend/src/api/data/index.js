@@ -1,7 +1,7 @@
 import { api } from '../constants';
 import { getToken } from '../auth';
 
-export const getData = async (search, onLoadedArtist) => {
+export const getData = async (search, onLoadedArtist, isGenre) => {
 	let data = [];
 	
 	const tokenData = await getToken();
@@ -11,8 +11,24 @@ export const getData = async (search, onLoadedArtist) => {
 	let amount = 0;
 	let valid = true;
 
-	for (let i = 0; i < 6; i++){
-		const response = await fetch(`${api}/search?q=genre:"${search}"&type=artist&offset=${amount}&limit=50`, {
+	let artistGenre = "";
+
+	if (!isGenre) {
+		const artistRes = await fetch(`${api}/search?q=artist:"${search}"&type=artist&offset=${amount}&limit=1`, {
+			method: 'get',
+			headers: {
+				'Authorization': `Bearer ${tokenData.token}`
+			},
+		})
+
+		const newDataArtistRes = await artistRes.json();
+		//newData = [...newData, ...newDataSingle.artists.items]
+		artistGenre = newDataArtistRes.artists.items[0].genres[0];
+		console.log(artistGenre);
+	}
+
+	for (let i = 0; i < 7; i++){
+		const response = await fetch(`${api}/search?q=genre:"${isGenre ? search : artistGenre}"&type=artist&offset=${amount}&limit=50`, {
 			method: 'get',
 			headers: {
 				'Authorization': `Bearer ${tokenData.token}`
