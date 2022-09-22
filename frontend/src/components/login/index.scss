@@ -5,12 +5,24 @@
 	height: 100vh;
 	width: 100%;
 	flex-direction: column;
+	@include DBorder;
+
+
+	.logo{
+		width: 40rem;
+		height: 20rem;
+		background-image: url('../../assets/logo.png');
+		background-size: cover;
+		background-repeat: no-repeat;
+	}
 
 	#login-center-container {
 		// @include DBorder;
 		width: 70%;
 		padding: 5rem;
 		box-sizing: border-box;
+		@include FlexCenter;
+		flex-direction: column;
 
 		@media screen and (max-width: $tabletSize) {
 			width: 100%;
@@ -18,19 +30,19 @@
 		}
 
 		h1 {
-			font-size: 2rem;
-			font-weight: 900;
+			font-size: 1em;
+			font-weight: 700;
 			margin-bottom: 2rem;
 
 			@media screen and (max-width: $tabletSize) {
 				width: 100%;
-				font-size: 1.6rem;
+				font-size: 1rem;
 			}
 		}
 
 		span {
-			font-size: 5rem;
-			font-weight: 600;
+			font-size: 1.5rem;
+			font-weight: 200;
 
 			@media screen and (max-width: $tabletSize) {
 				font-size: 4rem;

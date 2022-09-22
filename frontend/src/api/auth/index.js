@@ -23,7 +23,7 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 				reject('Missing Verifier');
 				return;
 			}
-				
+
 			const tokenBody = `client_id=${process.env.REACT_APP_CLIENT_ID}&grant_type=authorization_code&code=${authCode}&redirect_uri=${redirect_uri}&code_verifier=${verifier}`;
 			const refreshBody = `client_id=${process.env.REACT_APP_CLIENT_ID}&grant_type=refresh_token&refresh_token=${apiObjectSave?.refresh}`;
 
@@ -66,11 +66,8 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 
 export const onLogin = async () => {
 	try {
-		//console.log('object');
-		
-		//const api = 'https://us-central1-spotify-disovery.cloudfunctions.net/api/login';
-	const api = 'http://localhost:5001/spotify-disovery/us-central1/api/login';
-		//console.log("Usinbg Local host");
+		const api = 'https://us-central1-spotify-discovery.cloudfunctions.net/api/login';
+
 		const res = await fetch(api, {
 			method: 'get',
 		});

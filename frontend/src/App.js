@@ -32,13 +32,13 @@ const App = () => {
 		id: ''
 	})
 
-	const saveQueryCode = () => {
+	const saveQueryCode = async () => {
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 
 		if (urlParams.has('code')) {
 			//console.log(urlParams.get('code'));
-			localStorage.setItem('authCode', urlParams.get('code'))
+			await localStorage.setItem('authCode', urlParams.get('code'))
 			urlParams.delete('code');
 			window.location.search = urlParams;
 		}
@@ -46,6 +46,9 @@ const App = () => {
 		if (urlParams.has('search')) {
 			console.log(urlParams.get("search"))
 			setCurrentSearch(urlParams.get("search"));
+		}
+		else{
+			setCurrentSearch("Indie Pop");
 		}
 	}
 
@@ -81,7 +84,7 @@ const App = () => {
 		SetIsPaused(pause);
 	}
 
-	const getMusicData = async (search) => {
+	const getMusicData = async (search, isGenre) => {
 		
 		if (isLoading) {
 			setDataState([]);
@@ -109,11 +112,21 @@ const App = () => {
 		setCurrentSearch(search);
 		setDataState([]);
 
+		const urlParams = new URLSearchParams(window.location.search);
+		const nextState = { additionalInformation: 'Updated the URL with JS' };
+
+		if(urlParams.has("search"))
+			urlParams.delete("search")
+
+		urlParams.append("search", search)
+
+		window.history.replaceState(nextState, "thing", "?" + urlParams);
+
 		try {
 			await getData(search, (data, originalSearch) => {
 				setDataState(data);
 				return true;
-			});
+			}, isGenre);
 		} catch (err) {
 			console.log(err);
 		}
@@ -173,7 +186,7 @@ const App = () => {
 			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
 			<Tutorial isTutorial={isTutorial}/>
-			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} initial={currentSearch}/>
+			<SearchBar onSearch={(input, isGenre) => getMusicData(input, isGenre)} isLoading={isLoading} initial={currentSearch}/>
 			{isCategoryOpen && <ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} onHide={() => SetIsCategoryOpen(!isCategoryOpen) }/>}
 			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
 			<BubbleChart data={dataState} onPlayTrack={(uri, track) => playSong(uri, track)} viewCategory={ViewCategorys[currentCategory]}/>

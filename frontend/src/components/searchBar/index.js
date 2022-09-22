@@ -39,10 +39,8 @@ const SearchBar = ({ onSearch, isLoading, initial }) => {
 
 	const onSearchInput = (e) => {
 		e.preventDefault(); 
-		onSearch(searchQuery);
-
-			setIsAutoHidden(true);
-		
+		onSearch(searchQuery, !isGenreSearch);
+		setIsAutoHidden(true);
 	}
 
 

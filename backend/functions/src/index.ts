@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
-export const redirect_uri = 'http://localhost:3000/'; 
-//export const redirect_uri = 'https://spotify-discovery.web.app/'
-//export const redirect_uri = 'https://newsongsfanks.com.au/'
+//export const redirect_uri = 'http://localhost:3000/'; 
+//xport const redirect_uri = 'https://spotify-discovery.web.app/'
+export const redirect_uri = 'https://slapseeker.com/'
 
 const crypto = require('crypto');
 
@@ -18,7 +18,7 @@ app.get('/login', (request: any, response: any) => {
 	const verifier = base64URLEncode(crypto.randomBytes(32));
 	const hash = base64URLEncode(sha256(verifier));
 	response.send({
-		url: `https://accounts.spotify.com/authorize?response_type=code&client_id=${key}&redirect_uri=${redirect_uri}&code_challenge_method=S256&code_challenge=${hash}&scope=user-modify-playback-state user-read-playback-state user-library-modify`,
+		url: `https://accounts.spotify.com/authorize?response_type=code&client_id=${key}&redirect_uri=${redirect_uri}&code_challenge_method=S256&code_challenge=${hash}&scope=user-library-modify`,
 		verifier,
 	});
 });

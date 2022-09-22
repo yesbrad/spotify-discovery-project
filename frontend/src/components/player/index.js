@@ -36,6 +36,9 @@ const Player = ({ songData, onPause, paused, onNextSong }) => {
 			<div className="player-right">
 				{id && <LikeButton id={id} />}
 			</div>
+			<div class="logo">
+
+			</div>
 		</div>
 	)
 }
