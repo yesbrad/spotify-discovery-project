@@ -3,8 +3,8 @@ import './index.scss';
 import Button from '../button';
 import SearchData from '../../data/searchData';
 
-const SearchBar = ({ onSearch, isLoading }) => {
-	const [searchQuery, setSearchQuery] = useState('indie')
+const SearchBar = ({ onSearch, isLoading, initial }) => {
+	const [searchQuery, setSearchQuery] = useState(initial)
 	const [auto, SetAuto] = useState([]);
 	const [isAutoHidden, setIsAutoHidden] = useState(true)
 	const [isGenreSearch, setIsGenreSearch] = useState(true)
@@ -48,19 +48,19 @@ const SearchBar = ({ onSearch, isLoading }) => {
 
 	return (
 
-		<form onAbort className="seachbar-container" onSubmit={(e) => onSearchInput(e)}>
+		<form className="seachbar-container" onSubmit={(e) => onSearchInput(e)}>
 			<div className="search-bar-input" style={{height: (isAutoHidden) ? '3rem' : '35rem'}}>
 				<input onChange={e => onChangeSearch(e.target.value)} value={searchQuery}></input>
 				{ (!isAutoHidden) && <div className="search-auto-container">
 					{auto.map(fill => (
-						<button onClick={() => {onSearch(fill); onChangeSearch(fill); setIsAutoHidden(true);}} className="search-bar-auto">
+						<button onClick={() => {onChangeSearch(fill); setIsAutoHidden(true);}} className="search-bar-auto">
 							<h3>{fill}</h3>
 						</button>
 					))}
 				</div>}
 			</div>	
 			<div className="searchbar-button">
-				<Button red={!isGenreSearch} title={isLoading ? "Finding New Tunes" : `Search ${isGenreSearch ? 'Genre' : 'Artist' }`} onClick={() => { return; }} />
+				<Button red={!isGenreSearch} title={isLoading ? "Stop" : `Search ${isGenreSearch ? 'Genre' : 'Artist' }`} onClick={() => { return; }} />
 {				!isLoading && <button type="button" onClick={() => setIsGenreSearch(!isGenreSearch) }> Or Search By {isGenreSearch ? 'Artist' : 'Genre' }</button>
 }				{/* <Button red title={isLoading ? "Finding New Tunes" : "Search Artist"} onClick={() => { return; }} /> */}
 			</div>

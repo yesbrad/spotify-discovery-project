@@ -5,7 +5,6 @@ import SearchBar from './components/searchBar';
 import Login from './components/login';
 import { getToken, onLogin } from './api/auth';
 import { getData } from './api/data';
-import { play } from './api/player';
 import Player from './components/player';
 import ViewCategorys from './data/viewCategorys';
 import ViewCategoryBar from './components/viewCategoryBar';
@@ -24,7 +23,6 @@ const App = () => {
 	const [isTutorial, SetIsTutorial] = useState(true);
 	const [isCategoryOpen, SetIsCategoryOpen] = useState(true);
 
-
 	const audRef = useRef();
 
 	const [currentSongData, setCurrentSongData] = useState({
@@ -41,6 +39,13 @@ const App = () => {
 		if (urlParams.has('code')) {
 			//console.log(urlParams.get('code'));
 			localStorage.setItem('authCode', urlParams.get('code'))
+			urlParams.delete('code');
+			window.location.search = urlParams;
+		}
+
+		if (urlParams.has('search')) {
+			console.log(urlParams.get("search"))
+			setCurrentSearch(urlParams.get("search"));
 		}
 	}
 
@@ -78,10 +83,27 @@ const App = () => {
 
 	const getMusicData = async (search) => {
 		
-		if (isLoading) return;
-		SetIsTutorial(false);
+		if (isLoading) {
+			setDataState([]);
+			SetIsTutorial(true);
+			SetIsLoading(false);
 
-		//console.log('CLICKED', search);
+
+			const urlParams = new URLSearchParams(window.location.search);
+
+			if(urlParams.has("search"))
+				urlParams.delete("search")
+
+			urlParams.append("search", search)
+			window.location.search = urlParams;
+
+			//window.location.reload();
+			return;
+		};
+
+
+
+		SetIsTutorial(false);
 		SetIsLoading(true);
 
 		setCurrentSearch(search);
@@ -89,8 +111,6 @@ const App = () => {
 
 		try {
 			await getData(search, (data, originalSearch) => {
-				const valid = currentSearch === originalSearch;
-				//if(valid)
 				setDataState(data);
 				return true;
 			});
@@ -153,7 +173,7 @@ const App = () => {
 			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
 			<Tutorial isTutorial={isTutorial}/>
-			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} />
+			<SearchBar onSearch={input => getMusicData(input)} isLoading={isLoading} initial={currentSearch}/>
 			{isCategoryOpen && <ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} onHide={() => SetIsCategoryOpen(!isCategoryOpen) }/>}
 			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
 			<BubbleChart data={dataState} onPlayTrack={(uri, track) => playSong(uri, track)} viewCategory={ViewCategorys[currentCategory]}/>

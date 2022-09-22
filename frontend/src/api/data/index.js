@@ -13,7 +13,7 @@ export const getData = async (search, onLoadedArtist, isGenre) => {
 
 	let artistGenre = "";
 
-	if (!isGenre) {
+	if (isGenre) {
 		const artistRes = await fetch(`${api}/search?q=artist:"${search}"&type=artist&offset=${amount}&limit=1`, {
 			method: 'get',
 			headers: {
@@ -27,8 +27,8 @@ export const getData = async (search, onLoadedArtist, isGenre) => {
 		console.log(artistGenre);
 	}
 
-	for (let i = 0; i < 7; i++){
-		const response = await fetch(`${api}/search?q=genre:"${isGenre ? search : artistGenre}"&type=artist&offset=${amount}&limit=50`, {
+	for (let i = 0; i < 10; i++){
+		const response = await fetch(`${api}/search?q=genre:"${isGenre ? artistGenre : search}"&type=artist&offset=${amount}&limit=50`, {
 			method: 'get',
 			headers: {
 				'Authorization': `Bearer ${tokenData.token}`
@@ -61,10 +61,14 @@ export const getData = async (search, onLoadedArtist, isGenre) => {
 				'Content-Type': 'application/json'
 			},
 		})
+
 		const topTrackFeatureData = await topTrackFeatureResponse.json();
 
 		data = [...data, { ...newData[i], topTrackData, topTrackFeatureData }] 
+
+		
 		valid = onLoadedArtist(data, search);
+
 	}
 
 	return 'Finished';

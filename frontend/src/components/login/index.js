@@ -7,7 +7,7 @@ const Login = ({ onLogin }) => {
 		<div className="login-container">
 			<div id="login-center-container">
 				<h1>newsongsfanks.com.au</h1>
-				<span>Please Authorize with Spotify.</span>
+				<span>Please Authorize with Spotify grr.</span>
 				<div className="login-button"><Button title="Authorize" onClick={() => onLogin()} /></div>
 			</div>
 		</div>
