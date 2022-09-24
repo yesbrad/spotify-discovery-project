@@ -42,6 +42,8 @@ const App = () => {
 		}
 		else{
 			setCurrentSearch("Indie Pop");
+			urlParams.append("search", "indie pop");
+			window.location.search = urlParams;
 		}
 
 		if (urlParams.has('code')) {

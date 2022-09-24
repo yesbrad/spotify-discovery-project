@@ -34,10 +34,10 @@ const ViewCategoryBar = ({ categorys,  onSelectViewCategory, onHide }) => {
 				</button>
 
 				{isMore && categorys.map((cat, i) => (
-					<button className="view-bar-select" onClick={() => onSelectCategory(i)}>
+					<button key={cat + i} className="view-bar-select" onClick={() => onSelectCategory(i)}>
 						<h3>{cat.name}</h3>
 						<div className="view-bar-color-container">
-							{cat.colors.map(col => <div className="view-bar-color" style={{backgroundColor: col}}/>)}
+							{cat.colors.map(col => <div className="view-bar-color" key={col} style={{backgroundColor: col}}/>)}
 						</div>
 					</button>
 				))}
