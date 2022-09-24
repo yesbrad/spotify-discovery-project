@@ -66,7 +66,8 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 
 export const onLogin = async () => {
 	try {
-		const api = 'https://us-central1-spotify-discovery.cloudfunctions.net/api/login';
+		//const api = 'https://us-central1-spotify-discovery.cloudfunctions.net/api/login';
+		const api = 'http://localhost:5001/spotify-discovery/us-central1/api/login';
 
 		const res = await fetch(api, {
 			method: 'get',

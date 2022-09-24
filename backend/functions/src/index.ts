@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
-//export const redirect_uri = 'http://localhost:3000/'; 
+export const redirect_uri = 'http://localhost:3000/'; 
 //xport const redirect_uri = 'https://spotify-discovery.web.app/'
-export const redirect_uri = 'https://slapseeker.com/'
+//export const redirect_uri = 'https://slapseeker.com/'
 
 const crypto = require('crypto');
 
@@ -15,6 +15,7 @@ app.use(cors());
 
 app.get('/login', (request: any, response: any) => {
 	//response.redirect('http://google.com')
+	
 	const verifier = base64URLEncode(crypto.randomBytes(32));
 	const hash = base64URLEncode(sha256(verifier));
 	response.send({

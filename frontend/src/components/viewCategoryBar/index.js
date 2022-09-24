@@ -23,7 +23,7 @@ const ViewCategoryBar = ({ categorys,  onSelectViewCategory, onHide }) => {
 			<div className="view-bar-content">
 				<h3>{categorys[currentCategory].name}</h3>
 				<div className="view-bar-color-container">
-					{categorys[currentCategory].colors.map(col => <div className="view-bar-color" style={{backgroundColor: col}}/>)}
+					{categorys[currentCategory].colors.map(col => <div className="view-bar-color" key={col} style={{backgroundColor: col}}/>)}
 				</div>
 				<animated.button style={spring} className="view-bar-more" onClick={() => setMore(!isMore)}>
 					<HiChevronDown />

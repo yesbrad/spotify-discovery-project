@@ -36,13 +36,6 @@ const App = () => {
 		const queryString = window.location.search;
 		const urlParams = new URLSearchParams(queryString);
 
-		if (urlParams.has('code')) {
-			//console.log(urlParams.get('code'));
-			await localStorage.setItem('authCode', urlParams.get('code'))
-			urlParams.delete('code');
-			window.location.search = urlParams;
-		}
-
 		if (urlParams.has('search')) {
 			console.log(urlParams.get("search"))
 			setCurrentSearch(urlParams.get("search"));
@@ -50,6 +43,16 @@ const App = () => {
 		else{
 			setCurrentSearch("Indie Pop");
 		}
+
+		if (urlParams.has('code')) {
+			//console.log(urlParams.get('code'));
+			await localStorage.setItem('authCode', urlParams.get('code'))
+			await setTimeout(null, 1);
+			alert(localStorage.getItem('authCode'));
+			urlParams.delete('code');
+			window.location.search = urlParams;
+		}
+
 	}
 
 	const checkAuthState = async () => {
@@ -175,6 +178,18 @@ const App = () => {
 			id: tracks[track].id,
 		})
 	}
+
+	const onLogOut = () => {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		if(urlParams.has("search"))
+			urlParams.delete("search")
+
+		window.location.search = urlParams;
+
+		localStorage.clear();
+		window.location.reload();
+	}
 	
 	if(!hasLoaded) return <span>LOADING</span>
 
@@ -182,13 +197,13 @@ const App = () => {
 
 	return (
 		<div className="App" style={{height: 0}}>
-			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}
+			{/* {authError && <button onClick={() => onLogin()}>LOGIN</button>} */}	
 			{/* <button onClick={() => localStorage.clear()}>CLEAR STORAGE</button> */}
 			{/* <span>{`Error: ${authError}`}</span> */}
 			<Tutorial isTutorial={isTutorial}/>
 			<SearchBar onSearch={(input, isGenre) => getMusicData(input, isGenre)} isLoading={isLoading} initial={currentSearch}/>
 			{isCategoryOpen && <ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} onHide={() => SetIsCategoryOpen(!isCategoryOpen) }/>}
-			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused}/>
+			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused} onLogOut={onLogOut}/>
 			<BubbleChart data={dataState} onPlayTrack={(uri, track) => playSong(uri, track)} viewCategory={ViewCategorys[currentCategory]}/>
 			<audio ref={audRef} />
 		</div>

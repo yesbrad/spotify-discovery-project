@@ -8,7 +8,7 @@ import {
 	FaPause
 } from 'react-icons/fa';
 
-const Player = ({ songData, onPause, paused, onNextSong }) => {
+const Player = ({ songData, onPause, paused, onNextSong, onLogOut }) => {
 	const { title, artists, image, id } = songData;
 
 	return (
@@ -35,8 +35,9 @@ const Player = ({ songData, onPause, paused, onNextSong }) => {
 			</div>
 			<div className="player-right">
 				{id && <LikeButton id={id} />}
+				<Button title="LOGOUT" onClick={() => onLogOut()} red></Button>
 			</div>
-			<div class="logo">
+			<div className="logo">
 
 			</div>
 		</div>

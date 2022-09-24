@@ -14,7 +14,6 @@ export const getData = async (search, onLoadedArtist, isGenre) => {
 	let artistGenre = "";
 
 	if (isGenre) {
-		console.log("CURTIS")
 		const artistRes = await fetch(`${api}/search?q=artist:"${search}"&type=artist&offset=${amount}&limit=1`, {
 			method: 'get',
 			headers: {
@@ -23,7 +22,6 @@ export const getData = async (search, onLoadedArtist, isGenre) => {
 		})
 
 		const newDataArtistRes = await artistRes.json();
-		//newData = [...newData, ...newDataSingle.artists.items]
 		artistGenre = newDataArtistRes.artists.items[0].genres[0];
 		console.log(artistGenre);
 	}
