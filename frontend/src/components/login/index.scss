@@ -14,6 +14,16 @@
 		background-image: url('../../assets/logo.png');
 		background-size: cover;
 		background-repeat: no-repeat;
+	
+		@media screen and (max-width: $tabletSize) {
+			width: 30rem;
+			height: 15rem;
+		}
+
+		@media screen and (max-width: $smallMobileSize) {
+			width: 20rem;
+			height: 10rem;
+		}
 	}
 
 	#login-center-container {
@@ -25,7 +35,7 @@
 		flex-direction: column;
 
 		@media screen and (max-width: $tabletSize) {
-			width: 100%;
+			width: 90%;
 			padding: 1.5rem;
 		}
 
@@ -38,6 +48,11 @@
 				width: 100%;
 				font-size: 1rem;
 			}
+
+			@media screen and (max-width: $smallMobileSize) {
+				width: 20rem;
+				font-size: .4rem;
+			}
 		}
 
 		span {
@@ -45,7 +60,11 @@
 			font-weight: 200;
 
 			@media screen and (max-width: $tabletSize) {
-				font-size: 4rem;
+				font-size: 2em;
+			}
+
+			@media screen and (max-width: $smallMobileSize) {
+				font-size: 1rem;
 			}
 		}
 

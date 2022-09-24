@@ -43,23 +43,18 @@ const App = () => {
 		else{
 			setCurrentSearch("Indie Pop");
 			urlParams.append("search", "indie pop");
-			window.location.search = urlParams;
 		}
 
 		if (urlParams.has('code')) {
-			//console.log(urlParams.get('code'));
 			await localStorage.setItem('authCode', urlParams.get('code'))
-			await setTimeout(null, 1);
-			alert(localStorage.getItem('authCode'));
 			urlParams.delete('code');
-			window.location.search = urlParams;
 		}
-
+		
+		window.history.replaceState({}, "thing", "?" + urlParams);
 	}
 
 	const checkAuthState = async () => {
 		//console.log('checking auth state');
-		
 		try {	
 			await getToken();
 			SetAuthError(false);
@@ -89,13 +84,12 @@ const App = () => {
 		SetIsPaused(pause);
 	}
 
-	const getMusicData = async (search, isGenre) => {
+	const getMusicData = async (search, searchType) => {
 		
 		if (isLoading) {
 			setDataState([]);
 			SetIsTutorial(true);
 			SetIsLoading(false);
-
 
 			const urlParams = new URLSearchParams(window.location.search);
 
@@ -104,8 +98,6 @@ const App = () => {
 
 			urlParams.append("search", search)
 			window.location.search = urlParams;
-
-			//window.location.reload();
 			return;
 		};
 
@@ -130,8 +122,9 @@ const App = () => {
 		try {
 			await getData(search, (data, originalSearch) => {
 				setDataState(data);
+				console.log(data);
 				return true;
-			}, isGenre);
+			}, searchType);
 		} catch (err) {
 			console.log(err);
 		}

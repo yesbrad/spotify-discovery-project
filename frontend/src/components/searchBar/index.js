@@ -39,7 +39,7 @@ const SearchBar = ({ onSearch, isLoading, initial }) => {
 
 	const onSearchInput = (e) => {
 		e.preventDefault(); 
-		onSearch(searchQuery, !isGenreSearch);
+		onSearch(searchQuery, isGenreSearch ? "artist" : "genre");
 		setIsAutoHidden(true);
 	}
 
@@ -54,8 +54,13 @@ const SearchBar = ({ onSearch, isLoading, initial }) => {
 						<button onClick={() => {onChangeSearch(fill); setIsAutoHidden(true);}} className="search-bar-auto">
 							<h3>{fill}</h3>
 						</button>
-					))}
+				))}
 				</div>}
+				<div className='searchbar-recommend'>
+					<button onClick={(e) => {e.preventDefault(); onSearch('recommendations', 'recommend')}}>Recommended</button>
+					<button id='random'>Random</button>
+					<button id='popular'>Popular</button>
+				</div>
 			</div>	
 			<div className="searchbar-button">
 				<Button red={!isGenreSearch} title={isLoading ? "Stop" : `Search ${isGenreSearch ? 'Genre' : 'Artist' }`} onClick={() => { return; }} />

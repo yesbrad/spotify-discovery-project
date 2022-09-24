@@ -12,14 +12,22 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 		if (!apiObjectSave || useRefresh) {
 			const authCode = await localStorage.getItem('authCode');
 
-			if (!authCode) {
+			if (authCode == "" || authCode == null)  {
+				console.log('Token request failed: Missing Auth Code');
 				reject('Missing Auth Code');
 				return;
 			}
 			
 			const verifier = await localStorage.getItem('veri');
 			
-			if (verifier === null) {
+			if(authCode == verifier){
+				console.log('Token request failed: Same Codes');
+				reject("Codes are the same IDK");
+			}
+
+			if (verifier == "" || null) {
+				console.log('Token request failed: Missing Verifier');
+				alert("Failed Missing verifier")
 				reject('Missing Verifier');
 				return;
 			}
@@ -50,24 +58,26 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 				refresh: res.refresh_token,
 			}
 
-			// console.log('Using new token', apiObject);
+			console.log('Using new token');
 
 			localStorage.setItem('expireTime', JSON.stringify(apiObject))
 			resolve(apiObject);
 		} else {
-			// console.log('Using saved token');
+			console.log('Using saved token');
 			resolve(apiObjectSave);
 		}
 	} catch (err) {
-		console.log('Token request failed', err);
+		console.log('Token request failed', err.message);
 		reject(err);
 	}
 });
 
 export const onLogin = async () => {
+	await localStorage.clear();
+
 	try {
-		//const api = 'https://us-central1-spotify-discovery.cloudfunctions.net/api/login';
-		const api = 'http://localhost:5001/spotify-discovery/us-central1/api/login';
+		const api = 'https://us-central1-spotify-discovery.cloudfunctions.net/api/login';
+		//const api = 'http://localhost:5001/spotify-discovery/us-central1/api/login';
 
 		const res = await fetch(api, {
 			method: 'get',
