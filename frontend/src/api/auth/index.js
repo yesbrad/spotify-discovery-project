@@ -32,8 +32,8 @@ export const getToken = () => new Promise(async (resolve, reject) => {
 				return;
 			}
 
-			const tokenBody = `client_id=${process.env.REACT_APP_CLIENT_ID}&grant_type=authorization_code&code=${authCode}&redirect_uri=${redirect_uri}&code_verifier=${verifier}`;
-			const refreshBody = `client_id=${process.env.REACT_APP_CLIENT_ID}&grant_type=refresh_token&refresh_token=${apiObjectSave?.refresh}`;
+			const tokenBody = `client_id=${import.meta.env.VITE_CLIENT_ID}&grant_type=authorization_code&code=${authCode}&redirect_uri=${redirect_uri}&code_verifier=${verifier}`;
+			const refreshBody = `client_id=${import.meta.env.VITE_CLIENT_ID}&grant_type=refresh_token&refresh_token=${apiObjectSave?.refresh}`;
 
 			const checkResponse = await fetch(`https://accounts.spotify.com/api/token`, {
 				method: 'post',
