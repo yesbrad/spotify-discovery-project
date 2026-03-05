@@ -1,6 +1,33 @@
 import { api } from '../constants';
 import { getToken } from '../auth';
 
+/** Fetches the user's top genres from their top artists (Spotify doesn't have a direct genres endpoint). */
+export const getUserGenres = async () => {
+	const tokenData = await getToken();
+	const res = await fetch(`${api}/me/top/artists?limit=50&time_range=medium_term`, {
+		method: 'get',
+		headers: {
+			'Authorization': `Bearer ${tokenData.token}`,
+			'Content-Type': 'application/json',
+		},
+	});
+	if (!res.ok) {
+		const err = await res.json().catch(() => ({}));
+		throw new Error(err?.error?.message || `Failed to load genres (${res.status})`);
+	}
+	const data = await res.json();
+	const count = {};
+	for (const artist of data.items || []) {
+		for (const g of artist.genres || []) {
+			count[g] = (count[g] || 0) + 1;
+		}
+	}
+	// Sort by frequency (most listened first), then alphabetically for ties
+	return Object.entries(count)
+		.sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+		.map(([name]) => name);
+};
+
 export const getData = async (search, onLoadedArtist, searchType) => {
 	let data = [];
 	
@@ -83,8 +110,10 @@ export const getData = async (search, onLoadedArtist, searchType) => {
 
 	if(loadedArtists != null && loadedArtists.length >= 0)
 	{
+		if (loadedArtists.length === 0) {
+			onLoadedArtist([], search);
+		}
 		for (let i = 0; i < loadedArtists.length; i++) {
-			//if (!valid) return;
 
 			const topTracksResponse = await fetch(`${api}/artists/${loadedArtists[i].id}/top-tracks?country=AU`, {
 				method: 'get',
@@ -96,15 +125,43 @@ export const getData = async (search, onLoadedArtist, searchType) => {
 
 			const topTrackData = await topTracksResponse.json();
 
-			const topTrackFeatureResponse = await fetch(`${api}/audio-features/${topTrackData.tracks[0].id}`, {
-				method: 'get',
-				headers: {
-					'Authorization': `Bearer ${tokenData.token}`,
-					'Content-Type': 'application/json'
-				},
-			})
+			const tracks = topTrackData.tracks;
+			const firstTrackId = tracks?.[0]?.id;
 
-			const topTrackFeatureData = await topTrackFeatureResponse.json();
+			let topTrackFeatureData = null;
+
+			if (firstTrackId) {
+				try {
+					const topTrackFeatureResponse = await fetch(`${api}/audio-features/${firstTrackId}`, {
+						method: 'get',
+						headers: {
+							'Authorization': `Bearer ${tokenData.token}`,
+							'Content-Type': 'application/json'
+						},
+					})
+
+					const raw = await topTrackFeatureResponse.json();
+
+					// Spotify returns { error: { status, message } } on failure; success has type "audio_features"
+					if (topTrackFeatureResponse.ok && raw && !raw.error && (raw.energy != null || raw.valence != null)) {
+						topTrackFeatureData = raw;
+					}
+				} catch (_) {
+					// network or parse error: keep topTrackFeatureData null, use fallback below
+				}
+			}
+
+			// Fallback when audio-features missing or failed: use spread values so bubbles still get different colors
+			if (!topTrackFeatureData) {
+				const t = i / Math.max(1, loadedArtists.length);
+				topTrackFeatureData = {
+					energy: 0.2 + 0.6 * t,
+					acousticness: 0.5 - 0.4 * (i % 3) / 3,
+					valence: 0.3 + 0.5 * (i % 5) / 5,
+					danceability: 0.4 + 0.4 * (i % 7) / 7,
+				};
+				if (i === 0) console.warn('Spotify audio-features missing or failed; using fallback values. Check token scopes and that tracks have features.');
+			}
 
 			data = [...data, { ...loadedArtists[i], topTrackData, topTrackFeatureData }] 
 			
@@ -117,26 +174,62 @@ export const getData = async (search, onLoadedArtist, searchType) => {
 }
 
 const LoadArtistsFromGenre = async (searchGenre, amount, tokenData) => {
-	let loadedArtists = []
+	let loadedArtists = [];
 
-	if(searchGenre === ""){
-		console.log("No Search Genre!")
-		return;
+	if (!searchGenre || String(searchGenre).trim() === '') {
+		console.warn('LoadArtistsFromGenre: empty genre');
+		return loadedArtists;
 	}
 
-	for (let i = 0; i < 10; i++){
-		const response = await fetch(`${api}/search?q=genre:"${searchGenre}"&type=artist&offset=${amount}&limit=50`, {
+	const trySearch = async (query) => {
+		const q = encodeURIComponent(query);
+		const response = await fetch(`${api}/search?q=${q}&type=artist&limit=50`, {
 			method: 'get',
 			headers: {
-				'Authorization': `Bearer ${tokenData.token}`
+				'Authorization': `Bearer ${tokenData.token}`,
 			},
-		})
+		});
+		const json = await response.json();
+		const items = json?.artists?.items ?? [];
+		return Array.isArray(items) ? items : [];
+	};
 
-		const newDataSingle = await response.json();
-		// console.log(newDataSingle);
-		loadedArtists = [...loadedArtists, ...newDataSingle.artists.items]
-		amount += 50;
+	// 1) Exact genre search: genre:"..."
+	const exactQuery = `genre:"${searchGenre.trim()}"`;
+	let batch = await trySearch(exactQuery);
+
+	// 2) If no results, try Spotify seed-style (hyphenated, no quotes)
+	if (batch.length === 0) {
+		const hyphenated = searchGenre.trim().toLowerCase().replace(/\s+/g, '-');
+		if (hyphenated !== searchGenre.trim()) {
+			batch = await trySearch(`genre:${hyphenated}`);
+		}
+	}
+
+	// 3) If still empty, keyword search so we still get some artists
+	if (batch.length === 0) {
+		batch = await trySearch(searchGenre.trim());
+	}
+
+	loadedArtists = batch;
+
+	// Paginate for more only if we got a full page
+	let offset = 50;
+	for (let i = 0; i < 9 && batch.length === 50; i++) {
+		const nextQuery = encodeURIComponent(exactQuery);
+		const response = await fetch(`${api}/search?q=${nextQuery}&type=artist&offset=${offset}&limit=50`, {
+			method: 'get',
+			headers: {
+				'Authorization': `Bearer ${tokenData.token}`,
+			},
+		});
+		const json = await response.json();
+		batch = json?.artists?.items ?? [];
+		if (!Array.isArray(batch) || batch.length === 0) break;
+		loadedArtists = [...loadedArtists, ...batch];
+		offset += 50;
+		if (batch.length < 50) break;
 	}
 
 	return loadedArtists;
-}
+};

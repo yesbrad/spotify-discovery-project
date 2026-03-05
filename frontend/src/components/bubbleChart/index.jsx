@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
-import { rgb } from 'd3';
 
 const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 	const svgRef = useRef(null);
@@ -17,7 +16,12 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 	}
 
 	const getColor = (artist) => {
-		return viewCategory.colors[Math.floor(artist.topTrackFeatureData[viewCategory.id] * 10)];
+		const value = artist.topTrackFeatureData?.[viewCategory.id];
+		if (value == null || !Array.isArray(viewCategory.colors) || !viewCategory.colors.length) {
+			return viewCategory.colors?.[0] ?? '#999';
+		}
+		const index = Math.min(9, Math.max(0, Math.floor(value * 10)));
+		return viewCategory.colors[index];
 	}
 
 	useEffect(() => {
@@ -61,6 +65,26 @@ const BubbleChart = ({ data, onPlayTrack, viewCategory }) => {
 			.attr('r', d => getSize(d))
 			.style('fill', d => getColor(d))
 			.style('z-index', '-30')
+			.on('mouseover', function(d) {
+				// raise the whole group so text stays above the circle
+				d3.select(this.parentNode).raise();
+
+				d3.select(this)
+					.transition()
+					.duration(200)
+					.ease(d3.easeCubicOut)
+					.attr('r', getSize(d) * 1.08)
+					.style('stroke', '#ffffff')
+					.style('stroke-width', 3);
+			})
+			.on('mouseout', function(d) {
+				d3.select(this)
+					.transition()
+					.duration(200)
+					.ease(d3.easeCubicOut)
+					.attr('r', getSize(d))
+					.style('stroke-width', 0);
+			})
 			.on('click', (d) => {
 				//console.log(d.topTrackData.tracks[0]);
 				onPlayTrack(d.topTrackData.tracks, 0);
