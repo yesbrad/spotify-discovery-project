@@ -10,6 +10,9 @@ import {
 	pausePlayback,
 	skipToNext,
 	getTrackUri,
+	getPlaybackState,
+	seekPlayback,
+	setVolume as setDeviceVolume,
 } from './api/player';
 import Player from './components/player';
 import ViewCategorys from './data/viewCategorys';
@@ -30,6 +33,9 @@ const App = () => {
 	const [currentSearch, setCurrentSearch] = useState('')
 	const [isTutorial, SetIsTutorial] = useState(true);
 	const [isCategoryOpen, SetIsCategoryOpen] = useState(true);
+	const [positionMs, setPositionMs] = useState(0);
+	const [durationMs, setDurationMs] = useState(0);
+	const [volume, setVolume] = useState(100);
 
 	const audRef = useRef();
 	const useSpotifyPlaybackRef = useRef(false);
@@ -40,6 +46,33 @@ const App = () => {
 		image: '',
 		id: ''
 	})
+
+	// Keep local progress in sync with the HTML audio element when using preview playback.
+	useEffect(() => {
+		const audio = audRef.current;
+		if (!audio) return;
+
+		const handleTimeUpdate = () => {
+			setPositionMs(audio.currentTime * 1000);
+			if (!Number.isNaN(audio.duration)) {
+				setDurationMs(audio.duration * 1000);
+			}
+		};
+
+		const handleLoadedMetadata = () => {
+			if (!Number.isNaN(audio.duration)) {
+				setDurationMs(audio.duration * 1000);
+			}
+		};
+
+		audio.addEventListener('timeupdate', handleTimeUpdate);
+		audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+
+		return () => {
+			audio.removeEventListener('timeupdate', handleTimeUpdate);
+			audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+		};
+	}, []);
 
 	const saveQueryCode = async () => {
 		const queryString = window.location.search;
@@ -84,6 +117,46 @@ const App = () => {
 		startUp();
 	}, [])
 
+	// When playing on a Spotify device, periodically poll for playback state so we can show progress.
+	useEffect(() => {
+		let intervalId;
+
+		const startPolling = async () => {
+			try {
+				// We intentionally resolve a fresh token inside the interval to handle expiry.
+				intervalId = setInterval(async () => {
+					if (!useSpotifyPlaybackRef.current || isPaused) {
+						return;
+					}
+
+					try {
+						const tokenData = await getToken();
+						const state = await getPlaybackState(tokenData);
+						if (state && state.item) {
+							setPositionMs(state.progress_ms ?? 0);
+							setDurationMs(state.item.duration_ms ?? 0);
+						}
+					} catch (_) {
+						// If this fails, fall back to preview playback for future actions.
+						useSpotifyPlaybackRef.current = false;
+					}
+				}, 2000);
+			} catch (_) {
+				useSpotifyPlaybackRef.current = false;
+			}
+		};
+
+		if (!isPaused && useSpotifyPlaybackRef.current) {
+			startPolling();
+		}
+
+		return () => {
+			if (intervalId) {
+				clearInterval(intervalId);
+			}
+		};
+	}, [isPaused, currentTrack]);
+
 	const onPause = async (pause) => {
 		if (useSpotifyPlaybackRef.current) {
 			try {
@@ -103,6 +176,46 @@ const App = () => {
 			}
 		}
 		SetIsPaused(pause);
+	};
+
+	const onSeek = async (nextPositionMs) => {
+		// First update local UI.
+		setPositionMs(nextPositionMs);
+
+		// Seek on active Spotify device if we're using it.
+		if (useSpotifyPlaybackRef.current) {
+			try {
+				const tokenData = await getToken();
+				await seekPlayback(tokenData, Math.max(0, Math.floor(nextPositionMs)));
+			} catch (_) {
+				useSpotifyPlaybackRef.current = false;
+			}
+		}
+
+		// Also seek the HTML audio element if present (preview playback).
+		if (audRef.current) {
+			audRef.current.currentTime = nextPositionMs / 1000;
+		}
+	};
+
+	const onChangeVolume = async (nextVolume) => {
+		const safeVolume = Math.min(100, Math.max(0, nextVolume));
+		setVolume(safeVolume);
+
+		// Apply to HTML audio element.
+		if (audRef.current) {
+			audRef.current.volume = safeVolume / 100;
+		}
+
+		// Apply to Spotify device if in use.
+		if (useSpotifyPlaybackRef.current) {
+			try {
+				const tokenData = await getToken();
+				await setDeviceVolume(tokenData, safeVolume);
+			} catch (_) {
+				// If this fails, just keep local volume; playback still works.
+			}
+		}
 	};
 
 	const getMusicData = async (search, searchType) => {
@@ -176,6 +289,8 @@ const App = () => {
 						image: nextTrack.album?.images?.[0] ?? { url: '' },
 						id: nextTrack.id,
 					});
+					setPositionMs(0);
+					setDurationMs(nextTrack.duration_ms ?? 0);
 					SetIsPaused(false);
 					return;
 				}
@@ -193,6 +308,8 @@ const App = () => {
 				image: nextTrack.album?.images?.[0] ?? { url: '' },
 				id: nextTrack.id,
 			});
+			setPositionMs(0);
+			setDurationMs(nextTrack.duration_ms ?? 0);
 			SetIsPaused(false);
 			audRef.current.play();
 		} else {
@@ -203,6 +320,68 @@ const App = () => {
 				image: nextTrack.album?.images?.[0] ?? { url: '' },
 				id: nextTrack.id,
 			});
+			setPositionMs(0);
+			setDurationMs(nextTrack.duration_ms ?? 0);
+		}
+	};
+
+	const onPrevSong = async () => {
+		if (currentTracks === null) return;
+
+		const prevIndex =
+			currentTrack <= 0 ? currentTracks.length - 1 : currentTrack - 1;
+		const prevTrack = currentTracks[prevIndex];
+
+		if (useSpotifyPlaybackRef.current) {
+			try {
+				const tokenData = await getToken();
+				const uris = currentTracks.map(getTrackUri);
+				const ok = await startPlayback(tokenData, {
+					uris,
+					offset: { position: prevIndex },
+				});
+				if (ok) {
+					setCurrentTrack(prevIndex);
+					setCurrentSongData({
+						title: prevTrack.name,
+						artists: prevTrack.artists,
+						image: prevTrack.album?.images?.[0] ?? { url: '' },
+						id: prevTrack.id,
+					});
+					setPositionMs(0);
+					setDurationMs(prevTrack.duration_ms ?? 0);
+					SetIsPaused(false);
+					return;
+				}
+			} catch (_) {
+				useSpotifyPlaybackRef.current = false;
+			}
+		}
+
+		// Preview fallback or primary when not using Spotify
+		if (prevTrack.preview_url && audRef.current) {
+			audRef.current.src = prevTrack.preview_url;
+			setCurrentTrack(prevIndex);
+			setCurrentSongData({
+				title: prevTrack.name,
+				artists: prevTrack.artists,
+				image: prevTrack.album?.images?.[0] ?? { url: '' },
+				id: prevTrack.id,
+			});
+			setPositionMs(0);
+			setDurationMs(prevTrack.duration_ms ?? 0);
+			SetIsPaused(false);
+			audRef.current.play();
+		} else {
+			setCurrentTrack(prevIndex);
+			setCurrentSongData({
+				title: prevTrack.name,
+				artists: prevTrack.artists,
+				image: prevTrack.album?.images?.[0] ?? { url: '' },
+				id: prevTrack.id,
+			});
+			setPositionMs(0);
+			setDurationMs(prevTrack.duration_ms ?? 0);
 		}
 	};
 
@@ -219,6 +398,8 @@ const App = () => {
 			image: selected.album?.images?.[0] ?? { url: '' },
 			id: selected.id,
 		});
+		setPositionMs(0);
+		setDurationMs(selected.duration_ms ?? 0);
 
 		try {
 			const tokenData = await getToken();
@@ -238,6 +419,7 @@ const App = () => {
 		// Fallback: 30s preview in browser
 		if (selected.preview_url && audRef.current) {
 			audRef.current.src = selected.preview_url;
+			setPositionMs(0);
 			SetIsPaused(false);
 			audRef.current.play();
 		}
@@ -273,7 +455,19 @@ const App = () => {
 				/>
 			</div>
 			{isCategoryOpen && <ViewCategoryBar categorys={ViewCategorys} onSelectViewCategory={(cat) => setCurrentCategory(cat)} onHide={() => SetIsCategoryOpen(!isCategoryOpen) }/>}
-			<Player onNextSong={onNextSong} songData={currentSongData} onPause={pause => onPause(pause)} paused={isPaused} onLogOut={onLogOut}/>
+			<Player
+				onNextSong={onNextSong}
+				onPrevSong={onPrevSong}
+				songData={currentSongData}
+				onPause={pause => onPause(pause)}
+				paused={isPaused}
+				onLogOut={onLogOut}
+				positionMs={positionMs}
+				durationMs={durationMs}
+				onSeek={onSeek}
+				volume={volume}
+				onChangeVolume={onChangeVolume}
+			/>
 			<BubbleChart data={dataState} onPlayTrack={(uri, track) => playSong(uri, track)} viewCategory={ViewCategorys[currentCategory]}/>
 			<audio ref={audRef} />
 		</div>
