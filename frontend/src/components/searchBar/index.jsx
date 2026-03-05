@@ -25,6 +25,10 @@ const SearchBar = ({ onSearch, isLoading, initial }) => {
 		}
 	}, []);
 
+	useEffect(() => {
+		setSearchQuery(initial);
+	}, [initial]);
+
 
 	const onChangeSearch = (val) => {
 		const newSeach = SearchData.filter(a => a.includes(val))
@@ -39,7 +43,7 @@ const SearchBar = ({ onSearch, isLoading, initial }) => {
 
 	const onSearchInput = (e) => {
 		e.preventDefault(); 
-		onSearch(searchQuery, isGenreSearch ? "artist" : "genre");
+		onSearch(searchQuery, isGenreSearch ? "genre" : "artist");
 		setIsAutoHidden(true);
 	}
 
@@ -63,9 +67,20 @@ const SearchBar = ({ onSearch, isLoading, initial }) => {
 				</div>
 			</div>	
 			<div className="searchbar-button">
-				<Button red={!isGenreSearch} title={isLoading ? "Stop" : `Search ${isGenreSearch ? 'Genre' : 'Artist' }`} onClick={() => { return; }} />
-{				!isLoading && <button type="button" onClick={() => setIsGenreSearch(!isGenreSearch) }> Or Search By {isGenreSearch ? 'Artist' : 'Genre' }</button>
-}				{/* <Button red title={isLoading ? "Finding New Tunes" : "Search Artist"} onClick={() => { return; }} /> */}
+				<Button
+					type="button"
+					red={!isGenreSearch}
+					title={isLoading ? "Stop" : `Search ${isGenreSearch ? 'Genre' : 'Artist'}`}
+					onClick={() => {
+						onSearch(searchQuery, isGenreSearch ? "genre" : "artist");
+						setIsAutoHidden(true);
+					}}
+				/>
+				{!isLoading && (
+					<button type="button" onClick={() => setIsGenreSearch(!isGenreSearch)}>
+						Or Search By {isGenreSearch ? 'Artist' : 'Genre'}
+					</button>
+				)}
 			</div>
 			</form>
 
