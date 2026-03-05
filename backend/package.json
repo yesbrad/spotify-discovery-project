@@ -1,0 +1,12 @@
+{
+  "name": "spotify-discovery-backend",
+  "private": true,
+  "scripts": {
+    "build": "npm run build --prefix functions",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "deploy": "firebase deploy --only functions"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  }
+}

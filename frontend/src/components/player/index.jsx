@@ -15,7 +15,7 @@ const Player = ({ songData, onPause, paused, onNextSong, onLogOut }) => {
 		<div className="player-container">
 			<div className="player-left">
 				<div className="player-song-image-container">
-					<div style={{backgroundImage: `url(${image.url})`, backgroundPosition: 'center', backgroundSize: 'contain'}} className="player-song-image"></div>
+					<div style={{backgroundImage: image?.url ? `url(${image.url})` : 'none', backgroundPosition: 'center', backgroundSize: 'contain'}} className="player-song-image"></div>
 				</div>
 				<div className="player-song-info">
 					<h2>{title}</h2>
